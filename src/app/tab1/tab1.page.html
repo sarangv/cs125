@@ -7,6 +7,10 @@
 </ion-header>
 
 <ion-content>
+  <div class ="ion-padding">
+    <ion-button (click)="SaveData()">Save Data</ion-button>
+    <ion-label>{{dataFromService}}</ion-label>
+  </div>
   <ion-item>
     <ion-label stacked>Set Height</ion-label>
     <ion-input type="text" [(ngModel)]="height" placeholder="My Height today (in cm)"></ion-input>
