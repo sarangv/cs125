@@ -135,34 +135,7 @@ export class RegistrationPage {
       (dataReturnFromService)=>{
         this.dataFromService = JSON.stringify(dataReturnFromService);
       })
+
+    this.navCtrl.navigateForward('/tabs');
   }
-
-  /*
-  ionViewLoad() {
-    let first_name = 'Rohit';
-    let last_name = 'Sudhir';
-    let height = 71;
-    let weight = 160;
-    let user = 'rohits1';
-    let email = 'wertyui@uci.edu';
-    let age = 21;
-    let payload = {
-      username: user,
-      email: email,
-      first_name: first_name,
-      last_name: last_name,
-      height: height,
-      weight: weight,
-      age: age,
-    };
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    this.http.post('http://127.0.0.1:5000/json-example', JSON.stringify(payload), {headers: headers});
-    console.log("DONE");
-  
-  }
-*/
-
-
-
 }

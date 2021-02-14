@@ -13,10 +13,23 @@ export class UserService {
     let headers = new HttpHeaders();
     headers.append('Content-Type', 'application/json');
     headers.append('Accept', 'application/json');
-    headers.append('Access-Control-Allow-Origin', 'http://localhost:3000/json-example');
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:3000/registration');
     headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT');
     headers.append('Access-Control-Allow-Credentials', 'true');
-    var url = "http://127.0.0.1:3000/json-example";
+    var url = "http://127.0.0.1:3000/registration";
+
+    return this.http.post(url, dataToSend, {headers: headers});
+  }
+
+  Savelogin(dataToSend)
+  {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:3000/login');
+    headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    var url = "http://127.0.0.1:3000/login";
 
     return this.http.post(url, dataToSend, {headers: headers});
   }

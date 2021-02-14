@@ -14,6 +14,7 @@ export class AuthService {
   token : any;
 
   constructor(private http: HttpClient, private storage: NativeStorage, private env: EnvService,) { }
+  
 
   login(user : string, password : string) {
     //this.http.post()
