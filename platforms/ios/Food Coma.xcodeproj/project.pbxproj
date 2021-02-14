@@ -28,6 +28,7 @@
 		AA7043FE41084DDD8FC249D3 /* CDVIonicKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ABA2BFD53C24C90A2683C98 /* CDVIonicKeyboard.m */; };
 		AE3F6F2B36FC45839A9A27F8 /* CDVWKWebViewEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = D38F169DF5AA4F8CAC0F8BB5 /* CDVWKWebViewEngine.m */; };
 		E9BFED2525F946B48A593D39 /* IONAssetHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF1393185F4C2FA592DABF /* IONAssetHandler.m */; };
+		786EC5C6C45245A5ADF00FD1 /* NativeStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2B3DBAAF4642DB8FF90311 /* NativeStorage.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,8 @@
 		F9A646E9FF8B442389DF0EFB /* CDVDevice.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVDevice.h; path = "cordova-plugin-device/CDVDevice.h"; sourceTree = "<group>"; };
 		FA03195C666749788EEA09A6 /* CDVStatusBar.h */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.c.h; name = CDVStatusBar.h; path = "cordova-plugin-statusbar/CDVStatusBar.h"; sourceTree = "<group>"; };
 		FAE046AD077941D2B1ADBAE4 /* HealthKit.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		5C2B3DBAAF4642DB8FF90311 /* NativeStorage.m */ = {isa = PBXFileReference; name = "NativeStorage.m"; path = "cordova-plugin-nativestorage/NativeStorage.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		44B2B252FE6A43A29087BB1B /* NativeStorage.h */ = {isa = PBXFileReference; name = "NativeStorage.h"; path = "cordova-plugin-nativestorage/NativeStorage.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,6 +236,8 @@
 				DE15701719814795A275E8D9 /* WorkoutActivityConversion.h */,
 				CD7B8C54D0824E08A4CB4DDA /* HKHealthStore+AAPLExtensions.h */,
 				91E9DBA8DE6B455FAB0C7B55 /* HealthKit.h */,
+				5C2B3DBAAF4642DB8FF90311 /* NativeStorage.m */,
+				44B2B252FE6A43A29087BB1B /* NativeStorage.h */,
 			);
 			name = Plugins;
 			path = "Food Coma/Plugins";
@@ -373,6 +378,7 @@
 				7C18CB13B27A47E8A8B180A0 /* WorkoutActivityConversion.m in Sources */,
 				7AB3D3B85AFF49A0BFB6D097 /* HKHealthStore+AAPLExtensions.m in Sources */,
 				8F65C332440E4C938F01740A /* HealthKit.m in Sources */,
+				786EC5C6C45245A5ADF00FD1 /* NativeStorage.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

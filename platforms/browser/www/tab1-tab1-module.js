@@ -9,7 +9,7 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<ion-header [translucent]=\"true\">\n  <ion-toolbar>\n    <ion-title>\n      Tab 1\n    </ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content [fullscreen]=\"true\">\n  <ion-header collapse=\"condense\">\n    <ion-toolbar>\n      <ion-title size=\"large\">Tab 1</ion-title>\n    </ion-toolbar>\n  </ion-header>\n\n  <app-explore-container name=\"Tab 1 page\"></app-explore-container>\n</ion-content>\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<ion-header [translucent]=\"true\">\n  <ion-toolbar>\n    <ion-title>\n      Home\n    </ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <ion-item>\n    <ion-label stacked>Set Height</ion-label>\n    <ion-input type=\"text\" [(ngModel)]=\"height\" placeholder=\"My Height today (in cm)\"></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label stacked>Current Height</ion-label>\n    <ion-input type=\"text\" [(ngModel)]=\"currentHeight\" readonly></ion-input>\n  </ion-item>\n  <ion-item>\n    <ion-label stacked>Steps last 24h</ion-label>\n    <ion-input type=\"text\" [(ngModel)]=\"stepcount\" readonly></ion-input>\n  </ion-item>\n \n  <button ion-button full (click)=\"saveHeight()\">Set Height</button>\n  <button ion-button full (click)=\"saveWorkout()\">Set a Workout</button>\n \n  <ion-list>\n    <ion-card *ngFor=\"let workout of workouts\">\n      <ion-card-header>{{ workout.calories }}</ion-card-header>\n      <ion-card-content>\n        <p>Activity: {{ workout.activityType }}</p>\n        <p>Duration: {{ workout.duration / 100 }} min</p>\n        <p>Date: {{ workout.startDate | date:'short' }}</p>\n        <p>Distance: {{ workout.miles }} miles</p>\n      </ion-card-content>\n    </ion-card>\n  </ion-list>\n</ion-content>");
 
 /***/ }),
 
@@ -27,14 +27,30 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _raw_loader_tab1_page_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! raw-loader!./tab1.page.html */ "8MT7");
 /* harmony import */ var _tab1_page_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./tab1.page.scss */ "rWyk");
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ "fXoL");
+/* harmony import */ var _ionic_native_health_kit_ngx__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @ionic-native/health-kit/ngx */ "QvbA");
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @ionic/angular */ "TEn/");
+
+
 
 
 
 
 let Tab1Page = class Tab1Page {
-    constructor() { }
+    constructor(healthKit, plt) {
+        this.healthKit = healthKit;
+        this.plt = plt;
+        this.currentHeight = 'No Data';
+        this.stepcount = 'No Data';
+        this.workouts = [];
+        if (this.healthKit.available()) {
+            console.log("HI");
+        }
+    }
 };
-Tab1Page.ctorParameters = () => [];
+Tab1Page.ctorParameters = () => [
+    { type: _ionic_native_health_kit_ngx__WEBPACK_IMPORTED_MODULE_4__["HealthKit"] },
+    { type: _ionic_angular__WEBPACK_IMPORTED_MODULE_5__["Platform"] }
+];
 Tab1Page = Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
     Object(_angular_core__WEBPACK_IMPORTED_MODULE_3__["Component"])({
         selector: 'app-tab1',

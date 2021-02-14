@@ -29,6 +29,9 @@
       "HEALTH_READ_PERMISSION": " ",
       "HEALTH_WRITE_PERMISSION": " ",
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-nativestorage": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {}

@@ -28,6 +28,9 @@
     },
     "com.telerik.plugins.healthkit": {
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "cordova-plugin-nativestorage": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {}
