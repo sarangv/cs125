@@ -13,7 +13,6 @@ import { AlertService } from 'src/app/services/alert.service';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  dataFromService:any="";
   constructor( private modalController: ModalController,
     private authService: AuthService,
     private navCtrl: NavController,
@@ -30,21 +29,13 @@ export class LoginPage implements OnInit {
     var dataToSend = {
       username: form.value.email, 
       password: form.value.password};
-      console.log("Hello");
-    this.userService.Savelogin(dataToSend).subscribe(
-      (dataReturnFromService)=>{
-        this.dataFromService = JSON.stringify(dataReturnFromService);
-      })
-    this.navCtrl.navigateForward('/tabs');
-    /*this.authService.login(form.value.email, form.value.password).subscribe(
-      data => {
-        this.navCtrl.navigateRoot('/tabs');
-        //this.alertService.presentToast("Logged In");
-      },
-      error => {
-        console.log(error);
-      }
-    );*/
+    this.userService.Savelogin(dataToSend).subscribe((response) => {
+      console.log(response);
+      this.navCtrl.navigateForward('/tabs');
+    }
+      
+      );
+    
   }
 
   register() {
