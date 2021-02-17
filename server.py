@@ -10,6 +10,7 @@ curr_id = 0
 
 @app.route('/registration', methods=['POST', 'OPTIONS'])
 def registration():
+    global curr_email
     db = pymysql.connect(host = 'database-1.cl6ppnv90bp5.us-east-2.rds.amazonaws.com', user = 'admin', password = '12345678')
     cursor = db.cursor()
     print("Version:", cursor.execute("select version()"))
@@ -25,13 +26,13 @@ def registration():
     height = None
     weight = None
     
-
     if request_data:
         if 'username' in request_data:
             username = request_data['username']
 
         if 'email' in request_data:
             email = request_data['email']
+            curr_email = email
 
         if 'first_name' in request_data:
             first_name = request_data['first_name']
@@ -55,7 +56,7 @@ def registration():
         print(cursor.execute(sql))
         print(cursor.fetchall())
 
-    return 'Added to DB'
+    return jsonify({'Added': 'valid'})
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
@@ -93,6 +94,66 @@ def loadprofile():
     curr_id = ret[0]
 
     return jsonify({'email': curr_email, 'name': ret[1] + " " + ret[2], 'username': ret[3], 'age': ret[5], 'height': ret[6], 'weight': ret[7]})
+
+@app.route('/activity', methods=['POST', 'OPTIONS'])
+def activity():
+    db = pymysql.connect(host = 'database-1.cl6ppnv90bp5.us-east-2.rds.amazonaws.com', user = 'admin', password = '12345678')
+    cursor = db.cursor()
+    sql = '''use testdata'''
+    cursor.execute(sql)
+    # (('l_id',), ('activity_id',), ('activity_name',), ('activity_start_time',), ('activity_end_time',), ('activity_c_burned',), ('activity_intensity',))
+    request_data = request.get_json()
+    print(request_data)
+    if request_data:
+        if 'activity_name' in request_data:
+            activity_name = request_data['activity_name']
+
+        if 'start_time' in request_data:
+            start_time = request_data['start_time']
+
+        if 'end_time' in request_data:
+            end_time = request_data['end_time']
+
+        if 'intensity' in request_data:
+            intensity = request_data['intensity']
+
+        if 'calories_b' in request_data:
+            calories_b = request_data['calories_b']
+
+        sql = '''insert into Activities (activity_name, activity_start_time, activity_end_time, activity_c_burned, activity_intensity) values('%s', '%s', '%s', %d, %d)''' % (activity_name, start_time, end_time, int(calories_b), int(intensity))
+        print(cursor.execute(sql))
+        db.commit()
+        sql = '''select * from Activities''' 
+        print(cursor.execute(sql))
+        print(cursor.fetchall())
+    return jsonify({'received': 'true'})
+
+@app.route('/food', methods=['POST', 'OPTIONS'])
+def food():
+    db = pymysql.connect(host = 'database-1.cl6ppnv90bp5.us-east-2.rds.amazonaws.com', user = 'admin', password = '12345678')
+    cursor = db.cursor()
+    sql = '''use testdata'''
+    cursor.execute(sql)
+    # (('l_id',), ('food_id',), ('food_name',), ('food_time',), ('food_c_intake',))
+    request_data = request.get_json()
+    print(request_data)
+    if request_data:
+        if 'food_name' in request_data:
+            food_name = request_data['food_name']
+
+        if 'time' in request_data:
+            food_time = request_data['time']
+
+        if 'calories_i' in request_data:
+            food_c_intake = request_data['calories_i']
+
+        sql = '''insert into Foods (food_name, food_time, food_c_intake) values ('%s', '%s', %d)''' % (food_name, food_time, int(food_c_intake))
+        print(cursor.execute(sql))
+        db.commit()
+        sql = '''select * from Foods''' 
+        print(cursor.execute(sql))
+        print(cursor.fetchall())
+    return jsonify({'received': 'true'})
 
 if __name__ == '__main__':
     app.run(debug=True, port=3000)

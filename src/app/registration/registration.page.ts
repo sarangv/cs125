@@ -59,7 +59,7 @@ export class RegistrationPage {
       {type: 'pattern',message: 'Please enter a valid height'}
     ],
     weight: [
-      { type: 'required', message: 'Height is required' },
+      { type: 'required', message: 'Weight is required' },
       {type: 'pattern',message: 'Please enter a valid weight'}
     ],
   };

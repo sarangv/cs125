@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-button color="light" (click)="dismissRegistration()">Back</ion-button>
+    <ion-title>
+      Activity Log
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="activityForm" (ngSubmit)="submit()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Activity Name</ion-label>
+        <ion-input autocapitalize inputmode="text" formControlName="name"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.name">
+        <ng-container *ngIf="name.hasError(error.type) && (name.dirty || name.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Start Time</ion-label>
+        <ion-input inputmode="text" formControlName="start_time"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.start_time">
+        <ng-container *ngIf="start_time.hasError(error.type) && (start_time.dirty || start_time.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">End Time</ion-label>
+        <ion-input inputmode="text" formControlName="end_time"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.end_time">
+        <ng-container *ngIf="end_time.hasError(error.type) && (end_time.dirty || end_time.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Intensity(1-5)</ion-label>
+        <ion-input autocapitalize inputmode="text" formControlName="intensity"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.intensity">
+        <ng-container *ngIf="intensity.hasError(error.type) && (intensity.dirty || intensity.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Calories burned</ion-label>
+        <ion-input formControlName="calories_b"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.calories_b">
+        <ng-container *ngIf="calories_b.hasError(error.type) && (calories_b.dirty || calories_b.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+    </ion-list>
+    <ion-button [disabled]="!activityForm.valid" (click)="SaveActivity()" type="submit" expand="block">Submit <ion-icon slot="end"
+        name="create">
+      </ion-icon>
+    </ion-button>
+  </form>
+</ion-content>

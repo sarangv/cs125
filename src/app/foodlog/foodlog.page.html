@@ -1,0 +1,45 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-button color="light" (click)="dismissRegistration()">Back</ion-button>
+    <ion-title>
+      Food Log
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="foodForm" (ngSubmit)="submit()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Food Name</ion-label>
+        <ion-input autocapitalize inputmode="text" formControlName="name"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.name">
+        <ng-container *ngIf="name.hasError(error.type) && (name.dirty || name.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Time Consumed </ion-label>
+        <ion-input inputmode="text" formControlName="time"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.time">
+        <ng-container *ngIf="time.hasError(error.type) && (time.dirty || time.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Calories</ion-label>
+        <ion-input formControlName="calories_i"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.calories_i">
+        <ng-container *ngIf="calories_i.hasError(error.type) && (calories_i.dirty || calories_i.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+    </ion-list>
+    <ion-button [disabled]="!foodForm.valid" (click)="SaveFood()" type="submit" expand="block">Submit <ion-icon slot="end"
+        name="create">
+      </ion-icon>
+    </ion-button>
+  </form>
+</ion-content>
