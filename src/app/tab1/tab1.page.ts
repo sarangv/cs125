@@ -21,6 +21,7 @@ export class Tab1Page {
   activity_name:string;
   activity_intensity:string;
   food_name:string;
+  stepCount = 'No Data';
   constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private navCtrl : NavController) {
     console.log("Excuting POST");
     var dataToSend = {
@@ -42,9 +43,39 @@ export class Tab1Page {
       if(response.hasOwnProperty('food_name')) { this.food_name = response['food_name']; }
       console.log(response);
     });
+    this.plt.ready().then(() =>{
+      this.healthKit.available().then(available => {
+        if (available) {
+          var options : HealthKitOptions = {
+            readTypes: ['HKQuantityTypeIdentifierHeight', 'HKQuantityTypeIdentifierStepCount'],
+            writeTypes: ['HKQuantityTypeIdentifierHeight', 'HKWorkoutTypeIdentifier', 'HKQuantityTypeIdentifierActiveEnergyBurned']
+          }
+
+          this.healthKit.requestAuthorization(options).then(_ => {
+            this.getSteps();
+          })
+        }
+      })
+    })
   }
 
   logout() {
     this.navCtrl.navigateBack('/login');
+  }
+
+  getSteps() {
+    var stepOptions = {
+      startDate: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
+      endDate: new Date(),
+      sampleType: 'HKQuantityTypeIdentifierStepCount',
+      unit: 'count'
+    }
+ 
+    this.healthKit.querySampleType(stepOptions).then(data => {
+      let stepSum = data.reduce((a, b) => a + b.quantity, 0);
+      this.stepCount = stepSum;
+    }, err => {
+      console.log('No steps: ', err);
+    });
   }
 }

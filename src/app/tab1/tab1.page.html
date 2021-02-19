@@ -20,6 +20,10 @@
         <ion-label>{{ calories_i }}</ion-label>
         </ion-chip>
       </h6>
+      <h6 class="steps">Steps Taken: <ion-chip>
+        <ion-input type="text" [(ngModel)]="stepCount" readonly></ion-input>
+        </ion-chip>
+      </h6>
     </div>
   </div>
   <div class="card-body2">

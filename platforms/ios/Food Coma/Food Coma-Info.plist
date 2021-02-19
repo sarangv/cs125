@@ -51,8 +51,8 @@
 		<true/>
 	</dict>
 	<key>NSHealthShareUsageDescription</key>
-	<string/>
+	<string>to keep track of user data</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string/>
+	<string>to keep track of user data</string>
 </dict>
 </plist>

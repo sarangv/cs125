@@ -65,11 +65,19 @@
             {
               "xml": "<string> </string>",
               "count": 1
+            },
+            {
+              "xml": "<string>to keep track of user data</string>",
+              "count": 1
             }
           ],
           "NSHealthUpdateUsageDescription": [
             {
               "xml": "<string> </string>",
+              "count": 1
+            },
+            {
+              "xml": "<string>to keep track of user data</string>",
               "count": 1
             }
           ]
