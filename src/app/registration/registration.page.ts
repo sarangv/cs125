@@ -104,7 +104,7 @@ export class RegistrationPage {
   //workouts = [];
  
   constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, private navCtrl : NavController) {
-    if (this.healthKit.available()) { console.log("HI"); } 
+    if (this.healthKit.available()) { console.log("Healthkit available"); } 
   }
 
   dismissRegistration() {
