@@ -21,11 +21,10 @@ export class LoginPage implements OnInit {
     ) { }
 
   ngOnInit() {
-    console.log("HI");
   }
 
   login(form: NgForm) {
-    console.log(form.value.email, form.value.password)
+    console.log("Email:" + form.value.email)
     var dataToSend = {
       username: form.value.email, 
       password: form.value.password};

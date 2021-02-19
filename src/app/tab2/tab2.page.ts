@@ -11,9 +11,14 @@ import { NavController, Platform } from '@ionic/angular';
 })
 
 export class Tab2Page {
- 
+  activity_name:string;
+  calories_b:string;
+  food_name:string; 
+  calories_i:string;
   constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, private navCtrl : NavController) {
-    if (this.healthKit.available()) { console.log("HI"); } 
+    if (this.healthKit.available()) { console.log("Healthkit available"); } 
+    this.loadActivity();
+    this.loadFood();
   }
 
   dismissRegistration() {
@@ -26,6 +31,42 @@ export class Tab2Page {
 
   sendtoFood() {
     this.navCtrl.navigateBack('/foodlog');
+  }
+
+  loadActivity() {
+    var dataToSend = {
+      data: "Sending"};
+    this.userService.LoadActivity(dataToSend).subscribe((response) => {
+      console.log(response);
+      if (response['valid'] == 'true') {
+        console.log("Activity data present");
+        this.activity_name = response['activity_name']
+        this.calories_b = response['calories_b']};
+
+    });
+  }
+
+  loadFood() {
+    var dataToSend = {
+      data: "Sending"};
+    this.userService.LoadFood(dataToSend).subscribe((response) => {
+      console.log(response);
+      if (response['valid'] == 'true') {
+        console.log("Food data present");
+        this.food_name = response['food_name']
+        this.calories_i = response['calories_i']};
+    
+    });
+  }
+
+  saveLog() {
+    console.log("Saving Data");
+    var dataToSend = {
+      data: "Sending"};
+    this.userService.Savelog(dataToSend).subscribe((response) => {
+      console.log(response);
+    });
+    this.navCtrl.navigateBack('/redirect');
   }
 
 }

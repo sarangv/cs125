@@ -83,11 +83,10 @@ import { NavController, Platform } from '@ionic/angular';
     });
    
     constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, private navCtrl : NavController) {
-      if (this.healthKit.available()) { console.log("HI"); } 
+      if (this.healthKit.available()) { console.log("Healthkit available"); } 
     }
 
     ngOnInit() {
-      console.log("HI");
     }
   
     dismissRegistration() {
@@ -114,9 +113,10 @@ import { NavController, Platform } from '@ionic/angular';
       this.userService.Saveactivity(dataToSend).subscribe(
         (dataReturnFromService)=>{
           this.dataFromService = JSON.stringify(dataReturnFromService);
+          console.log(dataReturnFromService);
+          this.navCtrl.navigateForward('/tabs/tab2');
         })
   
-      this.navCtrl.navigateForward('/tabs/tab2');
     }
   
   }

@@ -16,6 +16,11 @@ export class Tab1Page {
   age:string;
   height:string;
   weight:string;
+  calories_b:string;
+  calories_i:string;
+  activity_name:string;
+  activity_intensity:string;
+  food_name:string;
   constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private navCtrl : NavController) {
     console.log("Excuting POST");
     var dataToSend = {
@@ -28,6 +33,13 @@ export class Tab1Page {
       this.age = response['age'];
       this.height = response['height'];
       this.weight = response['weight'];
+      this.calories_b = response['calories_b'];
+      this.calories_i = response['calories_i'];
+      if(response.hasOwnProperty('activity_name')) {
+        this.activity_name = response['activity_name'];
+        this.activity_intensity = response['activity_intensity']
+      }
+      if(response.hasOwnProperty('food_name')) { this.food_name = response['food_name']; }
       console.log(response);
     });
   }

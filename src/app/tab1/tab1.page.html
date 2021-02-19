@@ -7,11 +7,36 @@
   </ion-toolbar>
 </ion-header>
 <ion-content>
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <div class="card-body">
+    <div class="user-meta ion-text-center">
+      <h3 class="playername">{{ name }}</h3>
+      <h5 class="country">{{ username }}</h5>
+      <h5 class="country">{{ email }}</h5>
+      <h6 class="calories_b">Calories Burned: <ion-chip>
+        <ion-label>{{ calories_b }}</ion-label>
+        </ion-chip>
+      </h6>
+      <h6 class="calories_i">Calories Eaten: <ion-chip>
+        <ion-label>{{ calories_i }}</ion-label>
+        </ion-chip>
+      </h6>
+    </div>
+  </div>
+  <div class="card-body2">
+    <div class="user-meta ion-text-center">
+      <h6 *ngIf="activity_name">Wow an intensity of {{ activity_intensity }} for {{ activity_name }}?? Keep up the good work</h6>
+      <h6 *ngIf="food_name">Hope you liked your {{ food_name }}!</h6>
+    </div>
+  </div>
+  <!--
   <p>User: {{ username }}</p>
   <p>Name: {{ name }}</p>
   <p>Email: {{ email }}</p>
   <p>Age: {{ age }}</p>
   <p>Height: {{ height }}</p>
   <p>Weight: {{ weight }}</p>
+  <p>Calories burned: {{ calories_b }}</p>
+  <p>Calories eaten: {{ calories_i }}</p>
+  -->
+  
 </ion-content>

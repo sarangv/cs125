@@ -72,4 +72,43 @@ export class UserService {
 
     return this.http.post(url, dataToSend, {headers: headers});
   }
+
+  Savelog(dataToSend)
+  {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:3000/logs');
+    headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    var url = "http://127.0.0.1:3000/logs";
+
+    return this.http.post(url, dataToSend, {headers: headers});
+  }
+
+  LoadActivity(dataToSend)
+  {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:3000/loadactivity');
+    headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    var url = "http://127.0.0.1:3000/loadactivity";
+
+    return this.http.post(url, dataToSend, {headers: headers});
+  }
+
+  LoadFood(dataToSend)
+  {
+    let headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    headers.append('Access-Control-Allow-Origin', 'http://localhost:3000/loadfood');
+    headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT');
+    headers.append('Access-Control-Allow-Credentials', 'true');
+    var url = "http://127.0.0.1:3000/loadfood";
+
+    return this.http.post(url, dataToSend, {headers: headers});
+  }
 }

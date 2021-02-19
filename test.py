@@ -50,14 +50,18 @@ def create_table(table_name):
 
 
 
-
-def create_table(table_name):
-    sql = '''create table %s (p_id int not null auto_increment, fname text, lname text, username text, email text, age int not null, weight int not null, height int not null, primary key (p_id))''' % (table_name)
-    print(cursor.execute(sql))
-
 def delete_table(table_name):
     sql = '''drop table %s ''' % (table_name)
     print(cursor.execute(sql))
+
+def remove_data(table_name):
+    sql = '''SET FOREIGN_KEY_CHECKS=OFF'''
+    print(cursor.execute(sql))
+    sql = '''delete from %s ''' % (table_name)
+    print(cursor.execute(sql))
+    sql = '''SET FOREIGN_KEY_CHECKS=On'''
+    print(cursor.execute(sql))
+    db.commit()
 
 def show_all():
     sql = '''show tables'''
@@ -83,6 +87,13 @@ def get_columns(table_name):
 database = "testdata"
 use_db(database)
 show_all()
-get_columns("Foods")
+remove_data("Users")
+remove_data("Activities")
+remove_data("Logs")
+remove_data("Foods")
+
+#sql = '''insert into Logs (p_id, l_date, c_burned, c_intake) values (1, "11-28-2020", 450, 2300)'''
+#print(cursor.execute(sql))
+#db.commit()
 #insert_to_table("Users", 1, "test", "data", 20, 180, 70)
-#get_from_table("Users")
+get_from_table("Users")

@@ -131,11 +131,9 @@ export class RegistrationPage {
       height: height, 
       weight: weight, 
       age: age};
-    this.userService.Savedata(dataToSend).subscribe(
-      (dataReturnFromService)=>{
-        this.dataFromService = JSON.stringify(dataReturnFromService);
-      })
-
-    this.navCtrl.navigateForward('/tabs');
+      this.userService.Savedata(dataToSend).subscribe((response) => {
+        console.log(response);
+        this.navCtrl.navigateForward('/tabs');
+      });
   }
 }

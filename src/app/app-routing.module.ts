@@ -26,6 +26,10 @@ const routes: Routes = [
     path: 'foodlog',
     loadChildren: () => import('./foodlog/foodlog.module').then( m => m.FoodlogPageModule)
   },
+  {
+    path: 'redirect',
+    loadChildren: () => import('./redirect/redirect.module').then( m => m.RedirectPageModule)
+  },
 ];
 @NgModule({
   imports: [
