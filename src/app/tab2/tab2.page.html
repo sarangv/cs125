@@ -9,18 +9,32 @@
 <ion-content>
     <ion-button (click)="sendtoActivity()" type="button" size="large" color="secondary" expand = "full">Log Activity</ion-button>
     <ion-button (click)="sendtoFood()" type="button" size="large" color= "dark" display= "block" expand= "full">Log Food</ion-button>
-    <h5 *ngIf="activity_name">Activity Added:</h5>
-    <h3 *ngIf="activity_name" style="text-align:center">{{ activity_name }}</h3>
-      <h6 *ngIf="activity_name" class="calories_b">Calories Burned: <ion-chip>
-        <ion-label>{{ calories_b }}</ion-label>
-        </ion-chip>
-      </h6>
-    <h5 *ngIf="food_name">Food Added: </h5>
-    <h3 *ngIf="food_name" style="text-align:center">{{ food_name }}</h3>
-    <h6 *ngIf="food_name" class="calories_i">Calories Eaten: <ion-chip>
-      <ion-label>{{ calories_i }}</ion-label>
-      </ion-chip>
-    </h6>
+    <ng-container *ngIf="activity_name">
+      <ng-container *ngFor= "let i of activity_name">
+        <h5>Activity Added:</h5>
+        <h3 style="text-align:center">{{ i }}</h3>
+         <!--
+          <h6 class="calories_b">Calories Burned: <ion-chip>
+            <ion-label>{{ i }}</ion-label>
+            </ion-chip>
+          </h6>
+         --> 
+      </ng-container>
+    </ng-container>
+    
+    <ng-container *ngIf="food_name">
+      <ng-container *ngFor= "let i of food_name">
+        <h5>Food Added: </h5>
+        <h3 style="text-align:center">{{ i }}</h3>
+        <!--
+          <h6 class="calories_i">Calories Eaten: <ion-chip>
+            <ion-label>{{ j }}</ion-label>
+            </ion-chip>
+          </h6>
+        --> 
+      </ng-container>
+    </ng-container>
+    
 </ion-content>
 <ion-footer class="ion-no-padding ion-no-margin">
   <ion-button (click)="saveLog()" type="submit" expand="block">Submit<ion-icon slot="end"name="create"></ion-icon></ion-button>

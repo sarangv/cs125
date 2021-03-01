@@ -11,10 +11,10 @@ import { NavController, Platform } from '@ionic/angular';
 })
 
 export class Tab2Page {
-  activity_name:string;
-  calories_b:string;
-  food_name:string; 
-  calories_i:string;
+  activity_name:any;
+  calories_b:any;
+  food_name:any; 
+  calories_i:any;
   constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, private navCtrl : NavController) {
     if (this.healthKit.available()) { console.log("Healthkit available"); } 
     this.loadActivity();
