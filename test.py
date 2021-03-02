@@ -22,7 +22,7 @@ def use_db(db_name):
     print(cursor.execute(sql))
 
 def create_table(table_name):
-    sql = '''create table %s (p_id int not null auto_increment, fname text, lname text, username text, email text, age int not null, weight int not null, height int not null, primary key (p_id))''' % (table_name)
+    sql = '''create table %s (p_id int not null auto_increment, fname text, lname text, username text, email text, age int not null, weight int not null, height int not null, snacks int, meals int, feasts int, sleeptime int, cal_burned int, goal_cal int, primary key (p_id))''' % (table_name)
     print(cursor.execute(sql))
 
 #Log table:
@@ -107,8 +107,19 @@ database = "testdata"
 use_db(database)
 curr_date = date.today().strftime("%y/%m/%d")
 print(curr_date)
+#sql = '''Alter table Users Add snacks int, Add meals int, Add feasts int, Add sleeptime int, Add cal_burned int, Add goal_cal int''' 
+#print(cursor.execute(sql))
+#db.commit()
+#delete_table("Users")
+#delete_table("Logs")
+#delete_table("Foods")
+#delete_table("Activities")
+#create_table("Users")
+#create_table_Logs()
+#create_table_Activities()
+#create_table_Foods()
 
-#remove_data("Users")
+remove_data("Users")
 #remove_data("Logs")
 #remove_data("Activities")
 #remove_data("Foods")
@@ -116,7 +127,7 @@ print(curr_date)
 #get_from_table("Logs")
 #get_from_table("Foods")
 #get_from_table("Activities")
-get_columns("Logs")
+show_all()
 
 
 

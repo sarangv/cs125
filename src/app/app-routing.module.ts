@@ -30,6 +30,10 @@ const routes: Routes = [
     path: 'redirect',
     loadChildren: () => import('./redirect/redirect.module').then( m => m.RedirectPageModule)
   },
+  {
+    path: 'usergoals',
+    loadChildren: () => import('./usergoals/usergoals.module').then( m => m.UsergoalsPageModule)
+  },
 ];
 @NgModule({
   imports: [

@@ -1,0 +1,72 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-button color="light" (click)="dismissGoals()">Back</ion-button>
+    <ion-title>
+      Goals
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <form [formGroup]="usergoalForm" (ngSubmit)="submit()">
+    <ion-list>
+      <ion-item>
+        <ion-label position="floating">Avg. Number of Snacks Daily</ion-label>
+        <ion-input formControlName="snacks"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.snacks">
+        <ng-container *ngIf="snacks.hasError(error.type) && (snacks.dirty || snacks.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Avg. Number of Meals Daily</ion-label>
+        <ion-input formControlName="meals"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.meals">
+        <ng-container *ngIf="meals.hasError(error.type) && (meals.dirty || meals.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Avg. Number of Feasts Weekly</ion-label>
+        <ion-input formControlName="feasts"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.feasts">
+        <ng-container *ngIf="feasts.hasError(error.type) && (feasts.dirty || feasts.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Avg. Hours of Sleep Daily</ion-label>
+        <ion-input formControlName="sleeptime"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.sleeptime">
+        <ng-container *ngIf="sleeptime.hasError(error.type) && (sleeptime.dirty || sleeptime.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Avg. Hours of Calories Burned Daily</ion-label>
+        <ion-input formControlName="cal_burned"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.cal_burned">
+        <ng-container *ngIf="cal_burned.hasError(error.type) && (cal_burned.dirty || cal_burned.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <ion-item>
+        <ion-label position="floating">Goal Calories to Eat Daily</ion-label>
+        <ion-input formControlName="goal_cal"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.goal_cal">
+        <ng-container *ngIf="goal_cal.hasError(error.type) && (goal_cal.dirty || goal_cal.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+    </ion-list>
+    <ion-button [disabled]="!usergoalForm.valid" (click)="SaveGoals()" type="submit" expand="block">Submit <ion-icon slot="end"
+        name="create">
+      </ion-icon>
+    </ion-button>
+  </form>
+</ion-content>
