@@ -133,7 +133,7 @@ export class RegistrationPage {
       age: age};
       this.userService.Savedata(dataToSend).subscribe((response) => {
         console.log(response);
-        this.navCtrl.navigateForward('/tabs');
+        this.navCtrl.navigateForward('usergoals');
       });
   }
 }
