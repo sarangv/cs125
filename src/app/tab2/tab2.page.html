@@ -1,24 +1,39 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-button color="light" (click)="dismissRegistration()">Back</ion-button>
     <ion-title>
       Log Data
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-    <ion-button (click)="sendtoActivity()" type="button" size="large" color="secondary" expand = "full">Log Activity</ion-button>
-    <ion-button (click)="sendtoFood()" type="button" size="large" color= "dark" display= "block" expand= "full">Log Food</ion-button>
+  <ion-card>
+    <ion-card-header>
+      Last Activity:
+        <ion-card-title item-end>{{ activity_name }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text class="log-data">Calories burned: {{ calories_b }}</ion-text></p>
+      <p><ion-text class="log-data">Intensity: {{ intensity }}</ion-text></p>
+      <ion-button (click)="sendtoActivity()" type="button" size="small" expand = "block">Add Activity
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Last Meal:
+      <ion-card-title>
+        <ion-label item-end>{{ last_meal }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">Add Food Item<ion-icon slot="start" name="add-circle-outline"></ion-icon></ion-button>
+    </ion-card-content>
+  </ion-card>
     <ng-container *ngIf="activity_name">
       <ng-container *ngFor= "let i of activity_name">
         <h5>Activity Added:</h5>
         <h3 style="text-align:center">{{ i }}</h3>
-         <!--
-          <h6 class="calories_b">Calories Burned: <ion-chip>
-            <ion-label>{{ i }}</ion-label>
-            </ion-chip>
-          </h6>
-         --> 
       </ng-container>
     </ng-container>
     
@@ -37,5 +52,5 @@
     
 </ion-content>
 <ion-footer class="ion-no-padding ion-no-margin">
-  <ion-button (click)="saveLog()" type="submit" expand="block">Submit<ion-icon slot="end"name="create"></ion-icon></ion-button>
+  <ion-button (click)="saveLog()" type="submit" expand="block">Confirm<ion-icon slot="end"name="create"></ion-icon></ion-button>
 </ion-footer>

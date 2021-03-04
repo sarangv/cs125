@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HealthKit, HealthKitOptions } from '@ionic-native/health-kit/ngx';
 import {UserService} from '../api/user.service';
 import {FormBuilder, Validators} from '@angular/forms';
-import { NavController, Platform } from '@ionic/angular';
+import { ModalController, NavController, Platform } from '@ionic/angular';
+import { ActivitylogPage } from '../activitylog/activitylog.page';
+import { FoodlogPage } from '../foodlog/foodlog.page';
 
 @Component({
   selector: 'app-tab2',
@@ -15,10 +17,41 @@ export class Tab2Page {
   calories_b:any;
   food_name:any; 
   calories_i:any;
-  constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, private navCtrl : NavController) {
+  intensity:any;
+
+  constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, 
+    private navCtrl : NavController, private modalController: ModalController) {
     if (this.healthKit.available()) { console.log("Healthkit available"); } 
     this.loadActivity();
     this.loadFood();
+  }
+
+  ionViewWillEnter() {
+    this.reloadAll();
+  }
+
+  reloadAll(){
+    this.loadActivity();
+    this.loadFood();
+  }
+
+  async presentActivityModal() {
+    const modal = await this.modalController.create({
+      component: ActivitylogPage,
+      cssClass: 'my-custom-class'
+    });
+    return await modal.present();
+  }
+
+  async presentFoodModal() {
+    const modal = await this.modalController.create({
+      component: FoodlogPage,
+      cssClass: 'my-custom-class',
+      componentProps: {
+        modal : this.modalController
+      }
+    });
+    return await modal.present();
   }
 
   dismissRegistration() {
@@ -26,11 +59,13 @@ export class Tab2Page {
   }
 
   sendtoActivity() {
-    this.navCtrl.navigateBack('/activitylog');
+    this.presentActivityModal();
+    //this.navCtrl.navigateBack('/activitylog');
   }
 
   sendtoFood() {
-    this.navCtrl.navigateBack('/foodlog');
+    this.presentFoodModal();
+    //this.navCtrl.navigateBack('/foodlog');
   }
 
   loadActivity() {
@@ -41,8 +76,8 @@ export class Tab2Page {
       if (response['valid'] == 'true') {
         console.log("Activity data present");
         this.activity_name = response['activity_name']
-        this.calories_b = response['calories_b']};
-
+        this.calories_b = response['calories_b'];
+        this.intensity = response['intensity']};
     });
   }
 

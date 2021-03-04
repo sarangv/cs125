@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { HealthKit, HealthKitOptions } from '@ionic-native/health-kit/ngx';
 import {UserService} from '../api/user.service';
 import {FormBuilder, Validators} from '@angular/forms';
-import { NavController, Platform } from '@ionic/angular';
+import { ModalController, NavController, Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-foodlog',
@@ -56,8 +56,15 @@ import { NavController, Platform } from '@ionic/angular';
   
     //ionic generate page x
    
-    constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, private navCtrl : NavController) {
+    constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, 
+      private formBuilder: FormBuilder, private navCtrl : NavController, private modalController: ModalController) {
       if (this.healthKit.available()) { console.log("Healthkit available"); } 
+    }
+
+    dismissModal() {
+      this.modalController.dismiss({
+        'dismissed': true
+      });
     }
   
     dismissRegistration() {

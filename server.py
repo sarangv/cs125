@@ -57,6 +57,50 @@ def registration():
 
     return jsonify({'Added': 'valid'})
 
+@app.route('/usergoals', methods=['POST', 'OPTIONS'])
+def usergoals():
+    global curr_email, db
+    sql = '''SELECT * FROM Users u WHERE u.email = '%s' ''' % (curr_email)
+    cursor.execute(sql)
+    ret = cursor.fetchall()[0]
+    print(ret)
+    curr_id = ret[0]
+    request_data = request.get_json()
+    print(request_data)
+
+    snacks = None
+    meals = None
+    feasts = None
+    sleeptime = None
+    cal_burned = None
+    goal_cal = None
+    
+    if request_data:
+        if 'snacks' in request_data:
+            snacks = request_data['snacks']
+
+        if 'meals' in request_data:
+            meals = request_data['meals']
+
+        if 'feasts' in request_data:
+            feasts = request_data['feasts']
+
+        if 'sleeptime' in request_data:
+            sleeptime = request_data['sleeptime']
+
+        if 'cal_burned' in request_data:
+            cal_burned = request_data['cal_burned']
+
+        if 'goal_cal' in request_data:
+            goal_cal = request_data['goal_cal']
+
+        sql = ''' Update Users Set snacks = %d, meals = %d, feasts = %d, sleeptime = %d, cal_burned = %d, goal_cal = %d where p_id = %d ''' % (int(snacks), int(meals), int(feasts), int(sleeptime), int(cal_burned), int(goal_cal), curr_id)
+        cursor.execute(sql)
+        db.commit()
+        print('Added to DB')
+
+    return jsonify({'Added': 'valid'})
+
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
     global curr_email, db
@@ -122,7 +166,7 @@ def loadactivity():
     print("loadactivity")
     if activity_logs == {}:
         return jsonify({'valid':'false'})
-    return jsonify({'activity_name': activity_logs['activity_name'], 'start_time': activity_logs['start_time'], 'end_time': activity_logs['end_time'], 'itensity': activity_logs['intensity'], 'calories_b': activity_logs['calories_b'], 'valid': 'true'})
+    return jsonify({'activity_name': activity_logs['activity_name'], 'start_time': activity_logs['start_time'], 'end_time': activity_logs['end_time'], 'intensity': activity_logs['intensity'], 'calories_b': activity_logs['calories_b'], 'valid': 'true'})
 
 @app.route('/loadfood', methods=['POST', 'OPTIONS'])
 def loadfood():

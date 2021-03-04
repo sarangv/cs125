@@ -1,12 +1,45 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-button color="light" (click)="logout()">Logout</ion-button>
+    <button class="settings-button" ion-button item-end icon-right (click)="logout()">
+      <ion-icon class="settings-icon" size="large" name="cog-outline"></ion-icon>
+    </button>
     <ion-title>
       Home
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Calories Burned:</ion-card-subtitle>
+      <ion-card-title>
+        <ion-label item-end>{{ calories_b }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h6 class="description" *ngIf="activity_name">Wow an intensity of {{ activity_intensity }} for {{ activity_name }}?? Keep up the good work</h6>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Calories Consumed:</ion-card-subtitle>
+      <ion-card-title>
+        <ion-label item-end>{{ calories_i }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h6 class="description">Hello</h6>
+      <h6 class="description" *ngIf="food_name">Hope you liked your {{ food_name }}!</h6>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Steps Taken:</ion-card-subtitle>
+      <ion-card-title>
+        <ion-input type="text" [(ngModel)]="stepCount" readonly></ion-input>
+      </ion-card-title>
+    </ion-card-header>
+  </ion-card>
   <div class="card-body">
     <div class="user-meta ion-text-center">
       <h3 class="playername">{{ name }}</h3>

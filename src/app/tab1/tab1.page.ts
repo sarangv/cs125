@@ -3,6 +3,7 @@ import { HealthKit, HealthKitOptions } from '@ionic-native/health-kit/ngx';
 import {UserService} from '../api/user.service';
 import {FormBuilder, Validators} from '@angular/forms';
 import { NavController, Platform } from '@ionic/angular';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab1',
@@ -22,6 +23,7 @@ export class Tab1Page {
   activity_intensity:string;
   food_name:string;
   stepCount = 'No Data';
+
   constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private navCtrl : NavController) {
     console.log("Excuting POST");
     var dataToSend = {

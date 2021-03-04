@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { HealthKit, HealthKitOptions } from '@ionic-native/health-kit/ngx';
 import { UserService } from '../api/user.service';
 import { FormBuilder, Validators } from '@angular/forms';
-import { NavController, Platform } from '@ionic/angular';
+import { ModalController, NavController, Platform } from '@ionic/angular';
+import { Tab2Page } from '../tab2/tab2.page'; 
 
 @Component({
   selector: 'app-activitylog',
@@ -82,16 +83,23 @@ import { NavController, Platform } from '@ionic/angular';
       ]
     });
    
-    constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, private navCtrl : NavController) {
+    constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, 
+      private formBuilder: FormBuilder, private navCtrl : NavController, private modalController: ModalController) {
       if (this.healthKit.available()) { console.log("Healthkit available"); } 
     }
 
     ngOnInit() {
     }
-  
-    dismissRegistration() {
-      this.navCtrl.navigateBack('/tabs/tab2');
+
+    dismissModal() {
+      this.modalController.dismiss({
+        'dismissed': true
+      });
     }
+  
+    /*dismissRegistration() {
+      this.navCtrl.navigateBack('/tabs/tab2');
+    }*/
     
     public submit() {
       console.log(this.activityForm.value);
@@ -115,7 +123,8 @@ import { NavController, Platform } from '@ionic/angular';
           this.dataFromService = JSON.stringify(dataReturnFromService);
           console.log(dataReturnFromService);
           this.navCtrl.navigateForward('/tabs/tab2');
-        })
+        });
+      
   
     }
   
