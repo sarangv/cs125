@@ -99,7 +99,7 @@ export class UsergoalsPage {
         '',
         [
           Validators.required,
-          Validators.pattern('^[0-9]{1,3}$')
+          Validators.pattern('^[0-9]{1,4}$')
         ]
       ],
       goal_cal: [

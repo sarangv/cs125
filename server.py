@@ -166,7 +166,7 @@ def loadactivity():
     print("loadactivity")
     if activity_logs == {}:
         return jsonify({'valid':'false'})
-    return jsonify({'activity_name': activity_logs['activity_name'], 'start_time': activity_logs['start_time'], 'end_time': activity_logs['end_time'], 'intensity': activity_logs['intensity'], 'calories_b': activity_logs['calories_b'], 'valid': 'true'})
+    return jsonify({'activity_name': activity_logs['activity_name'][-1], 'start_time': activity_logs['start_time'][-1], 'end_time': activity_logs['end_time'][-1], 'intensity': activity_logs['intensity'][-1], 'calories_b': activity_logs['calories_b'][-1], 'valid': 'true'})
 
 @app.route('/loadfood', methods=['POST', 'OPTIONS'])
 def loadfood():
@@ -174,7 +174,7 @@ def loadfood():
     print("loadfood")
     if food_logs == {}:
         return jsonify({'valid':'false'})
-    return jsonify({'food_name': food_logs['food_name'], 'time': food_logs['food_time'], 'calories_i': food_logs['food_c_intake'], 'valid': 'true'})
+    return jsonify({'food_name': food_logs['food_name'][-1], 'time': food_logs['food_time'][-1], 'calories_i': food_logs['food_c_intake'][-1], 'valid': 'true'})
 
 
 @app.route('/activity', methods=['POST'])
@@ -223,8 +223,9 @@ def food():
 def logs():
     global curr_id, activity_logs, food_logs, db
     if (curr_id is not None):
+        print("entered logs")
         request_data = request.get_json()
-        curr_date = date.today().strftime("%y-%m-%d")
+        curr_date = date.today().strftime("%m-%d-%y")
         sql = '''SELECT * FROM Logs u WHERE u.p_id = '%s' and u.l_date = '%s' ''' % (curr_id, curr_date) 
         cursor.execute(sql)
         ret = cursor.fetchall()
