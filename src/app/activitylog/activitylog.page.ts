@@ -122,7 +122,8 @@ import { Tab2Page } from '../tab2/tab2.page';
         (dataReturnFromService)=>{
           this.dataFromService = JSON.stringify(dataReturnFromService);
           console.log(dataReturnFromService);
-          this.navCtrl.navigateForward('/tabs/tab2');
+          //this.navCtrl.navigateForward('/tabs/tab2');
+          this.dismissModal();
         });
       
   
