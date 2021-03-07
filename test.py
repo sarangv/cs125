@@ -61,6 +61,9 @@ def create_table_Activities():
 def create_table_Foods():
     sql = '''create table Foods (food_id int not null auto_increment, l_id int not null, food_name text, food_time text, food_c_intake int, primary key (food_id), FOREIGN KEY (l_id) REFERENCES Logs(l_id))'''
     print(cursor.execute(sql))
+def create_table_Models():
+    sql = '''create table Models (model_id int not null, breakfast_avg text, b_cal int, lunch_avg text, l_cal int, dinner_avg text, d_cal int, primary key (model_id))'''
+    print(cursor.execute(sql))
 
 def delete_table(table_name):
     sql = '''SET FOREIGN_KEY_CHECKS=OFF'''
@@ -105,12 +108,21 @@ def get_columns(table_name):
 # print(curr_date)
 database = "testdata"
 use_db(database)
-curr_date = date.today().strftime("%y/%m/%d")
+curr_date = date.today().strftime("%m-%d-%y")
 print(curr_date)
-#sql = '''Alter table Users Add snacks int, Add meals int, Add feasts int, Add sleeptime int, Add cal_burned int, Add goal_cal int''' 
-#print(cursor.execute(sql))
-#db.commit()
-#delete_table("Users")
+# sql = '''SET FOREIGN_KEY_CHECKS=OFF'''
+# print(cursor.execute(sql))
+# sql = '''DELETE FROM Logs WHERE l_id = 36 ''' 
+# print(cursor.execute(sql))
+# db.commit()
+# sql = '''DELETE FROM Foods WHERE l_id = 36 '''
+# print(cursor.execute(sql))
+# db.commit()
+# sql = '''SET FOREIGN_KEY_CHECKS=On'''
+# print(cursor.execute(sql))
+# db.commit()
+
+#delete_table("Models")
 #delete_table("Logs")
 #delete_table("Foods")
 #delete_table("Activities")
@@ -118,20 +130,21 @@ print(curr_date)
 #create_table_Logs()
 #create_table_Activities()
 #create_table_Foods()
-
-remove_data("Users")
+#get_from_table("Users")
+#remove_data("Users")
 #remove_data("Logs")
 #remove_data("Activities")
 #remove_data("Foods")
+
+#create_table_Models()
 #get_from_table("Users")
 #get_from_table("Logs")
-#get_from_table("Foods")
+get_from_table("Models")
+#create_table_Models()
 #get_from_table("Activities")
+#get_columns("Users")
 show_all()
 
-
-
-#get_from_table("Logs")
 
 '''
 User Comparison: time of establishing membership (know how long we've had training data on them - how reliable), eating goal type, age, height, weight, average daily number of hours of sleep, avg daily # of snacks, avg daily # of meals, avg daily # of feasts

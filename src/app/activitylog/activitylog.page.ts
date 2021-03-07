@@ -116,7 +116,6 @@ import { Tab2Page } from '../tab2/tab2.page';
           //this.navCtrl.navigateForward('/tabs/tab2');
         });
       this.modalController.dismiss();
-  
     }
   
   }

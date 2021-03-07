@@ -88,7 +88,8 @@ import { ModalController, NavController, Platform } from '@ionic/angular';
         (dataReturnFromService)=>{
           this.dataFromService = JSON.stringify(dataReturnFromService);
           console.log(dataReturnFromService);
-          this.navCtrl.navigateBack('/tabs/tab2');
+          //this.navCtrl.navigateBack('/tabs/tab2');
+          this.dismissModal();
         })
       this.modalController.dismiss();
       //this.navCtrl.navigateForward('/tabs');
