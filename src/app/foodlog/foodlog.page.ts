@@ -90,7 +90,7 @@ import { ModalController, NavController, Platform } from '@ionic/angular';
           console.log(dataReturnFromService);
           this.navCtrl.navigateBack('/tabs/tab2');
         })
-  
+      this.modalController.dismiss();
       //this.navCtrl.navigateForward('/tabs');
     }
 

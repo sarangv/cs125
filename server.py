@@ -3,6 +3,10 @@ from flask_cors import CORS
 from collections import defaultdict
 from datetime import date
 import pymysql
+import numpy as np
+from sklearn.preprocessing import RobustScaler
+import pandas as pd
+from datetime import datetime
 
 # create the Flask app
 app = Flask(__name__)
@@ -10,8 +14,64 @@ CORS(app)
 curr_email = ""
 curr_id = None
 db = None
+today = 1
 activity_logs = defaultdict(list)
 food_logs = defaultdict(list)
+
+def create_scalers(df):
+  scalers = []
+  for col in df.columns:
+    scalers.append(RobustScaler().fit(np.expand_dims(df[col], axis=1)))
+  return scalers
+
+
+def scale_data(df, scalers):
+  df_scaled = df.copy()
+  i = 0
+  for col in df.columns:
+    df_scaled[col] = np.squeeze(scalers[i].transform(np.expand_dims(df[col], axis=1)), axis=1)
+    i += 1
+  return df_scaled
+
+def get_similar_users(user, df_scaled, similars=1):
+  similarity_dists = []
+  data = df_scaled.to_numpy()
+  user_data = df_scaled.loc[user]
+  for i in range(len(data)):
+    if user == df_scaled.index[i]:
+      dist = 1e15
+    else:
+      dist = np.sqrt(np.sum([(a-b)*(a-b) for a, b in zip(user_data, data[i])]))
+    similarity_dists.append(dist)
+  similarity_dists = list(enumerate(similarity_dists))
+  similarity_dists.sort(key=lambda x:x[1])
+  users = [df_scaled.index[index] for index, val in similarity_dists[:similars]]
+  return users
+
+# Upon usergoals completion
+def find_similar_user():
+    global curr_id, db
+    request_data = request.get_json()
+    sql = '''SELECT age, height, weight, snacks, meals, feasts, sleeptime, cal_burned, goal_cal FROM Users u '''
+    cursor.execute(sql)
+    ret = cursor.fetchall()
+    #print(ret)
+    
+    sql_ids = '''SELECT p_id FROM Users u'''
+    cursor.execute(sql_ids)
+    ids = cursor.fetchall()
+    #print(ids)
+
+    df_user = pd.DataFrame(data=np.array(ret), index=np.squeeze(np.array(ids), axis=1))
+    scalers = create_scalers(df_user)
+    df_scaled = scale_data(df_user, scalers)
+
+    # REPLACE WITH CURR_ID
+    closest_user = get_similar_users(curr_id, df_scaled)[0]
+    sql = ''' Update Users Set model_id = %d where p_id = %d ''' % (closest_user, curr_id)
+    cursor.execute(sql)
+    db.commit()
+
 
 @app.route('/registration', methods=['POST', 'OPTIONS'])
 def registration():
@@ -99,11 +159,169 @@ def usergoals():
         db.commit()
         print('Added to DB')
 
+    # ASSOCIATES CURR USER WITH A SIMILAR USER'S MODEL
+    find_similar_user()
+
     return jsonify({'Added': 'valid'})
+
+
+def create_model():
+    global curr_id, db
+
+    request_data = request.get_json()
+    sql = '''SELECT l_id FROM Logs WHERE p_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    log_ids = cursor.fetchall()[0]
+    breakfast_avg = 0
+    b_c = 0
+    lunch_avg = 0
+    l_c = 0
+    dinner_avg = 0
+    d_c = 0
+    i = 0
+    for log_id in log_ids:
+        sql = '''SELECT food_time, food_c_intake FROM Foods WHERE l_id = %d ''' % (log_id)
+        cursor.execute(sql)
+        times = cursor.fetchall()
+        breakfast = datetime.strptime(times[0][0], '%m-%d-%y %I:%M %p')
+        breakfast_avg += breakfast.hour * 60 + breakfast.minute
+        lunch = datetime.strptime(times[1][0], '%m-%d-%y %I:%M %p')
+        lunch_avg += lunch.hour * 60 + lunch.minute
+        dinner = datetime.strptime(times[2][0], '%m-%d-%y %I:%M %p')
+        dinner_avg += dinner.hour * 60 + dinner.minute
+
+        b_c += times[0][1]
+        l_c += times[1][1]
+        d_c += times[2][1]
+        i += 1
+
+    breakfast_avg = int(breakfast_avg/i)
+    breakfast_avg = datetime(2021, 1, 1, int(breakfast_avg / 60), breakfast_avg % 60, 0).strftime('%I:%M %p')
+    lunch_avg = int(lunch_avg/i)
+    lunch_avg = datetime(2021, 1, 1, int(lunch_avg / 60), lunch_avg % 60, 0).strftime('%I:%M %p')
+    dinner_avg = int(dinner_avg/i)
+    dinner_avg = datetime(2021, 1, 1, int(dinner_avg / 60), dinner_avg % 60, 0).strftime('%I:%M %p')
+
+    b_c = int(b_c/i)
+    l_c = int(l_c/i)
+    d_c = int(d_c/i)
+
+    sql = '''insert into Models (model_id, breakfast_avg, b_cal, lunch_avg, l_cal, dinner_avg, d_cal) values(%d, '%s', %d, '%s', %d, '%s', %d)''' % (curr_id, breakfast_avg, b_c, lunch_avg, l_c, dinner_avg, d_c)
+    cursor.execute(sql)
+    db.commit()
+    print('Added to DB')
+
+# Happens when end of day/next morning starts
+def update_model():
+    global curr_id, db
+
+    request_data = request.get_json()
+    sql = '''SELECT min(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    start = cursor.fetchall()[0][0]
+    sql = '''SELECT max(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    end = cursor.fetchall()[0][0]
+    
+    days = end - start
+    sql = '''SELECT food_time, food_c_intake FROM Foods WHERE l_id = %d ''' % (end)
+    cursor.execute(sql)
+    today_times = cursor.fetchall()
+    
+    today_breakfast = datetime.strptime(today_times[0][0], '%m-%d-%y %I:%M %p')
+    today_breakfast = today_breakfast.hour * 60 + today_breakfast.minute
+    today_lunch = datetime.strptime(today_times[1][0], '%m-%d-%y %I:%M %p')
+    today_lunch = today_lunch.hour * 60 + today_lunch.minute
+    today_dinner = datetime.strptime(today_times[2][0], '%m-%d-%y %I:%M %p')
+    today_dinner = today_dinner.hour * 60 + today_dinner.minute
+    t_b_c = today_times[0][1]
+    t_l_c = today_times[1][1]
+    t_d_c = today_times[2][1]
+
+    sql = '''SELECT breakfast_avg, lunch_avg, dinner_avg, b_cal, l_cal, d_cal FROM Models WHERE model_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    times = cursor.fetchall()[0]
+
+    breakfast_avg = datetime.strptime('01-01-21 ' + times[0], '%m-%d-%y %I:%M %p')
+    breakfast_avg = breakfast_avg.hour * 60 + breakfast_avg.minute
+    lunch_avg = datetime.strptime('01-01-21 ' + times[1], '%m-%d-%y %I:%M %p')
+    lunch_avg = lunch_avg.hour * 60 + lunch_avg.minute
+    dinner_avg = datetime.strptime('01-01-21 ' + times[2], '%m-%d-%y %I:%M %p')
+    dinner_avg = dinner_avg.hour * 60 + dinner_avg.minute
+    b_c = times[3]
+    l_c = times[4]
+    d_c = times[5]
+
+    breakfast_avg = int(((breakfast_avg * days) + today_breakfast)/(days+1))
+    b_c = int(((b_c * days) + t_b_c)/(days+1))
+    lunch_avg = int(((lunch_avg * days) + today_lunch)/(days+1))
+    l_c = int(((l_c * days) + t_l_c)/(days+1))
+    dinner_avg = int(((dinner_avg * days) + today_dinner)/(days+1))
+    d_c = int(((d_c * days) + t_l_c)/(days+1))
+
+    breakfast_avg = datetime(2021, 1, 1, int(breakfast_avg / 60), breakfast_avg % 60, 0).strftime('%I:%M %p')
+    lunch_avg = datetime(2021, 1, 1, int(lunch_avg / 60), lunch_avg % 60, 0).strftime('%I:%M %p')
+    dinner_avg = datetime(2021, 1, 1, int(dinner_avg / 60), dinner_avg % 60, 0).strftime('%I:%M %p')
+
+    sql = ''' Update Models Set breakfast_avg = '%s', b_cal = %d, lunch_avg = '%s', l_cal = %d, dinner_avg = '%s', d_cal = %d where model_id = %d ''' % (breakfast_avg, b_c, lunch_avg, l_c, dinner_avg, d_c, curr_id)
+    cursor.execute(sql)
+    db.commit()
+    print('Added to DB')
+
+# Called when user clicks their recommendation page
+@app.route('/getrecommendation', methods=['POST', 'OPTIONS'])
+def get_rec():
+    global curr_id, db
+
+    b_foods = dict()
+    l_foods = dict()
+    d_foods = dict()
+
+    request_data = request.get_json()
+    sql = '''SELECT model_id FROM Users WHERE p_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    model_id = cursor.fetchall()[0]
+    sql = '''SELECT breakfast_avg, b_cal, lunch_avg, l_cal, dinner_avg, d_cal FROM Models WHERE model_id = %d ''' % (model_id)
+    cursor.execute(sql)
+    times = cursor.fetchall()[0]
+
+    sql = '''SELECT l_id FROM Logs WHERE p_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    log_ids = cursor.fetchall()[0]
+    for log_id in log_ids:
+        sql = '''SELECT food_name, food_c_intake FROM Foods WHERE l_id = %d ''' % (log_id)
+        cursor.execute(sql)
+        food_data = cursor.fetchall()
+        if food_data[0][0] not in b_foods and abs(food_data[0][1] - times[1]) < 200:
+            b_foods[food_data[0][0]] = [1, food_data[0][1]]
+        else:
+            b_foods[food_data[0][0]] = [b_foods[food_data[0][0]][0] + 1, ((b_foods[food_data[0][0]][1] * b_foods[food_data[0][0]][0]) + food_data[0][1])/(b_foods[food_data[0][0]][0] + 1)]
+        if food_data[1][0] not in l_foods and abs(food_data[1][1] - times[3]) < 200:
+            l_foods[food_data[1][0]] = [1, food_data[1][1]]
+        else:
+            l_foods[food_data[1][0]] = [l_foods[food_data[1][0]][0] + 1, ((l_foods[food_data[1][0]][1] * l_foods[food_data[1][0]][0]) + food_data[1][1])/(l_foods[food_data[1][0]][0] + 1)]
+        if food_data[2][0] not in d_foods and abs(food_data[2][1] - times[5]) < 200:
+            d_foods[food_data[2][0]] = [1, food_data[2][1]]
+        else:
+            d_foods[food_data[2][0]] = [d_foods[food_data[2][0]][0] + 1, ((d_foods[food_data[2][0]][1] * d_foods[food_data[2][0]][0]) + food_data[2][1])/(d_foods[food_data[2][0]][0] + 1)]
+
+    b_rec = sorted(b_foods.items(), key=lambda item: -item[1][0])[0][0]
+    l_rec = sorted(l_foods.items(), key=lambda item: -item[1][0])[0][0]
+    d_rec = sorted(d_foods.items(), key=lambda item: -item[1][0])[0][0]
+
+    return jsonify({
+        'b_time': times[0],
+        'b_food': b_rec,
+        'l_time': times[2],
+        'l_food': l_rec,
+        'd_time': times[4],
+        'd_food': d_rec
+    })
+
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
-    global curr_email, db
+    global curr_email, db, today
     request_data = request.get_json()
     if request_data:
         if 'username' in request_data:
@@ -113,6 +331,27 @@ def login():
                 print("Found in DB")
             else:
                 print("Not found")
+
+    # WHAT HAPPENS WHEN WE HAVE NO LOGS? Put this in a try-except block and make day value = 1?
+    request_data = request.get_json()
+    sql = '''SELECT min(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    start = cursor.fetchall()[0][0]
+    sql = '''SELECT max(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    end = cursor.fetchall()[0][0]
+    days = end - start + 1
+
+    # We've reached a new day if this statement is true! (Treating it as a morning login)
+    if days != today:
+        today = days
+        if today == 15:
+            sql = ''' Update Users Set model_id = %d where p_id = %d ''' % (curr_id, curr_id)
+            cursor.execute(sql)
+            db.commit()
+            create_model()
+        if today > 15:
+            update_model()
 
     print(curr_email)
     return jsonify({'valid': 'yes', 'email': 'found'})
@@ -166,7 +405,7 @@ def loadactivity():
     print("loadactivity")
     if activity_logs == {}:
         return jsonify({'valid':'false'})
-    return jsonify({'activity_name': activity_logs['activity_name'], 'start_time': activity_logs['start_time'], 'end_time': activity_logs['end_time'], 'intensity': activity_logs['intensity'], 'calories_b': activity_logs['calories_b'], 'valid': 'true'})
+    return jsonify({'activity_name': activity_logs['activity_name'][-1], 'start_time': activity_logs['start_time'][-1], 'end_time': activity_logs['end_time'][-1], 'intensity': activity_logs['intensity'][-1], 'calories_b': activity_logs['calories_b'][-1], 'valid': 'true'})
 
 @app.route('/loadfood', methods=['POST', 'OPTIONS'])
 def loadfood():
@@ -174,7 +413,7 @@ def loadfood():
     print("loadfood")
     if food_logs == {}:
         return jsonify({'valid':'false'})
-    return jsonify({'food_name': food_logs['food_name'], 'time': food_logs['food_time'], 'calories_i': food_logs['food_c_intake'], 'valid': 'true'})
+    return jsonify({'food_name': food_logs['food_name'][-1], 'time': food_logs['food_time'][-1], 'calories_i': food_logs['food_c_intake'][-1], 'valid': 'true'})
 
 
 @app.route('/activity', methods=['POST'])
@@ -223,8 +462,9 @@ def food():
 def logs():
     global curr_id, activity_logs, food_logs, db
     if (curr_id is not None):
+        print("entered logs")
         request_data = request.get_json()
-        curr_date = date.today().strftime("%y-%m-%d")
+        curr_date = date.today().strftime("%m-%d-%y")
         sql = '''SELECT * FROM Logs u WHERE u.p_id = '%s' and u.l_date = '%s' ''' % (curr_id, curr_date) 
         cursor.execute(sql)
         ret = cursor.fetchall()

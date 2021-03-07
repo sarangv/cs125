@@ -18,6 +18,9 @@ export class Tab2Page {
   food_name:any; 
   calories_i:any;
   intensity:any;
+  last_activity:any;
+  last_food:any;
+  activity_details:any;
 
   constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, 
     private navCtrl : NavController, private modalController: ModalController) {
@@ -40,6 +43,11 @@ export class Tab2Page {
       component: ActivitylogPage,
       cssClass: 'my-custom-class'
     });
+    modal.onDidDismiss().then((response) => {
+      if (response != null) {
+        this.reloadAll();
+      }
+    });
     return await modal.present();
   }
 
@@ -47,8 +55,10 @@ export class Tab2Page {
     const modal = await this.modalController.create({
       component: FoodlogPage,
       cssClass: 'my-custom-class',
-      componentProps: {
-        modal : this.modalController
+    });
+    modal.onDidDismiss().then((response) => {
+      if (response != null) {
+        this.reloadAll();
       }
     });
     return await modal.present();
@@ -75,9 +85,24 @@ export class Tab2Page {
       console.log(response);
       if (response['valid'] == 'true') {
         console.log("Activity data present");
-        this.activity_name = response['activity_name']
-        this.calories_b = response['calories_b'];
-        this.intensity = response['intensity']};
+        this.activity_name = response['activity_name'] 
+        this.calories_b = response['calories_b'].slice(-1)[0] ;
+        this.intensity = response['intensity'].slice(-1)[0] ;
+        this.last_activity = response['activity_name'].slice(-1)[0];
+        this.activity_details = [];
+        for (var i = 0; i < this.activity_name.length; i++) {
+          var activity : string = this.activity_name[i];
+          var calories = response['calories_b'][i];
+          console.log("ACTIVITY = ", activity);
+          var d = {};
+          d[activity] = calories;
+          this.activity_details.push(d);
+          console.log(this.activity_details);
+        }
+      }
+      else {
+        this.activity_name = [];
+      }
     });
   }
 
@@ -88,8 +113,9 @@ export class Tab2Page {
       console.log(response);
       if (response['valid'] == 'true') {
         console.log("Food data present");
-        this.food_name = response['food_name']
-        this.calories_i = response['calories_i']};
+        this.food_name = response['food_name'];
+        this.calories_i = response['calories_i'].slice(-1)[0];
+        this.last_food = response['food_name'].slice(-1)[0];};
     
     });
   }
@@ -101,6 +127,7 @@ export class Tab2Page {
     this.userService.Savelog(dataToSend).subscribe((response) => {
       console.log(response);
     });
+    //return await this.modalController.dismiss();
     this.navCtrl.navigateBack('/redirect');
   }
 

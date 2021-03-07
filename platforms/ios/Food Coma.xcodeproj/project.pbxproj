@@ -29,6 +29,9 @@
 		AE3F6F2B36FC45839A9A27F8 /* CDVWKWebViewEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = D38F169DF5AA4F8CAC0F8BB5 /* CDVWKWebViewEngine.m */; };
 		E9BFED2525F946B48A593D39 /* IONAssetHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C9FF1393185F4C2FA592DABF /* IONAssetHandler.m */; };
 		786EC5C6C45245A5ADF00FD1 /* NativeStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C2B3DBAAF4642DB8FF90311 /* NativeStorage.m */; };
+		D823C65520E6498B813194C3 /* AppDelegate+notification.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F16978858424A61834C94A9 /* AppDelegate+notification.m */; };
+		45D3886C117A454388EC240C /* PushPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C1D42C73217432F91A4D581 /* PushPlugin.m */; };
+		B5C0C39381FD43F18C056CF0 /* PushKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0604415C2BC4D79BD96701E /* PushKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +107,11 @@
 		FAE046AD077941D2B1ADBAE4 /* HealthKit.framework */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		5C2B3DBAAF4642DB8FF90311 /* NativeStorage.m */ = {isa = PBXFileReference; name = "NativeStorage.m"; path = "cordova-plugin-nativestorage/NativeStorage.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
 		44B2B252FE6A43A29087BB1B /* NativeStorage.h */ = {isa = PBXFileReference; name = "NativeStorage.h"; path = "cordova-plugin-nativestorage/NativeStorage.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		1F16978858424A61834C94A9 /* AppDelegate+notification.m */ = {isa = PBXFileReference; name = "AppDelegate+notification.m"; path = "phonegap-plugin-push/AppDelegate+notification.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		0C1D42C73217432F91A4D581 /* PushPlugin.m */ = {isa = PBXFileReference; name = "PushPlugin.m"; path = "phonegap-plugin-push/PushPlugin.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		10C09EB18E5048D390F16F92 /* AppDelegate+notification.h */ = {isa = PBXFileReference; name = "AppDelegate+notification.h"; path = "phonegap-plugin-push/AppDelegate+notification.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		99E325C1A1D1406A89F2C2A2 /* PushPlugin.h */ = {isa = PBXFileReference; name = "PushPlugin.h"; path = "phonegap-plugin-push/PushPlugin.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		E0604415C2BC4D79BD96701E /* PushKit.framework */ = {isa = PBXFileReference; name = "PushKit.framework"; path = "System/Library/Frameworks/PushKit.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +122,7 @@
 				301BF552109A68D80062928A /* libCordova.a in Frameworks */,
 				8889895D652F45F188834057 /* WebKit.framework in Frameworks */,
 				361209448522463C9D2E6D01 /* HealthKit.framework in Frameworks */,
+				B5C0C39381FD43F18C056CF0 /* PushKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +195,7 @@
 			children = (
 				EE32732E000C4F4993A1E18F /* WebKit.framework */,
 				FAE046AD077941D2B1ADBAE4 /* HealthKit.framework */,
+				E0604415C2BC4D79BD96701E /* PushKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -238,6 +248,10 @@
 				91E9DBA8DE6B455FAB0C7B55 /* HealthKit.h */,
 				5C2B3DBAAF4642DB8FF90311 /* NativeStorage.m */,
 				44B2B252FE6A43A29087BB1B /* NativeStorage.h */,
+				1F16978858424A61834C94A9 /* AppDelegate+notification.m */,
+				0C1D42C73217432F91A4D581 /* PushPlugin.m */,
+				10C09EB18E5048D390F16F92 /* AppDelegate+notification.h */,
+				99E325C1A1D1406A89F2C2A2 /* PushPlugin.h */,
 			);
 			name = Plugins;
 			path = "Food Coma/Plugins";
@@ -379,6 +393,8 @@
 				7AB3D3B85AFF49A0BFB6D097 /* HKHealthStore+AAPLExtensions.m in Sources */,
 				8F65C332440E4C938F01740A /* HealthKit.m in Sources */,
 				786EC5C6C45245A5ADF00FD1 /* NativeStorage.m in Sources */,
+				D823C65520E6498B813194C3 /* AppDelegate+notification.m in Sources */,
+				45D3886C117A454388EC240C /* PushPlugin.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

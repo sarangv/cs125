@@ -1,11 +1,54 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-button color="light" (click)="dismissRegistration()">Back</ion-button>
-    <ion-title>
-      Settings Page
+    <ion-title class="title">
+      Recommendations
     </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content>
-    <p>Settings</p>
+  <ion-card>
+    <ion-card-header>
+      Breakfast Recommendation:
+      <ion-card-title>
+        <ion-label item-end>Breakfast Time: {{ bf_time }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text>Recommended Food Item: {{ bf_food }}</ion-text></p>
+      <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
+        Add Food Item
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button>-->
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Lunch Recommendation:
+      <ion-card-title>
+        <ion-label item-end>Lunch Time: {{ l_time }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text>Recommended Food Item: {{ l_food }}</ion-text></p>
+      <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
+        Add Food Item
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button>-->
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Dinner Recommendation:
+      <ion-card-title>
+        <ion-label item-end>Dinner Time: {{ d_time }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text>Recommended Food Item: {{ d_food }}</ion-text></p>
+      <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
+        Add Food Item
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button>-->
+    </ion-card-content>
+  </ion-card>
 </ion-content>

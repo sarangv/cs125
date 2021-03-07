@@ -10,7 +10,7 @@ import { Tab2Page } from '../tab2/tab2.page';
   templateUrl: './activitylog.page.html',
   styleUrls: ['./activitylog.page.scss'],
 })
-  export class ActivitylogPage implements OnInit {
+  export class ActivitylogPage {
     get name() {
       return this.activityForm.get("name");
     }
@@ -87,15 +87,6 @@ import { Tab2Page } from '../tab2/tab2.page';
       private formBuilder: FormBuilder, private navCtrl : NavController, private modalController: ModalController) {
       if (this.healthKit.available()) { console.log("Healthkit available"); } 
     }
-
-    ngOnInit() {
-    }
-
-    dismissModal() {
-      this.modalController.dismiss({
-        'dismissed': true
-      });
-    }
   
     /*dismissRegistration() {
       this.navCtrl.navigateBack('/tabs/tab2');
@@ -122,9 +113,9 @@ import { Tab2Page } from '../tab2/tab2.page';
         (dataReturnFromService)=>{
           this.dataFromService = JSON.stringify(dataReturnFromService);
           console.log(dataReturnFromService);
-          this.navCtrl.navigateForward('/tabs/tab2');
+          //this.navCtrl.navigateForward('/tabs/tab2');
         });
-      
+      this.modalController.dismiss();
   
     }
   

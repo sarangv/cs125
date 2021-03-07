@@ -30,6 +30,9 @@
     },
     "cordova-plugin-nativestorage": {
       "PACKAGE_NAME": "io.ionic.starter"
+    },
+    "phonegap-plugin-push": {
+      "PACKAGE_NAME": "io.ionic.starter"
     }
   },
   "dependent_plugins": {}

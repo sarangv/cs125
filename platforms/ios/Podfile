@@ -4,5 +4,5 @@ platform :ios, '11.0'
 
 target 'Food Coma' do
 	project 'Food Coma.xcodeproj'
-
+	pod 'FirebaseMessaging', '~> 2.0.0'
 end
