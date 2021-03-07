@@ -321,39 +321,50 @@ def get_rec():
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
-    global curr_email, db, today
+    global curr_email, curr_id, db, today
+    print("login")
     request_data = request.get_json()
+    print(request.headers)
+    print(request_data)
     if request_data:
         if 'username' in request_data:
             curr_email = request_data['username']
-            sql = '''SELECT 1 FROM Users WHERE email = '%s' ''' % (curr_email)
+            #sql = '''SELECT 1 FROM Users WHERE email = '%s' ''' % (curr_email)
+            sql = '''SELECT * FROM Users u WHERE u.email = '%s' ''' % (curr_email)
+            cursor.execute(sql)
+            ret = cursor.fetchall()[0]
+            print("SQL RETURN")
+            print(ret)
+            curr_id = ret[0]
             if cursor.execute(sql) > 0:
                 print("Found in DB")
             else:
                 print("Not found")
-
-    # WHAT HAPPENS WHEN WE HAVE NO LOGS? Put this in a try-except block and make day value = 1?
-    request_data = request.get_json()
-    sql = '''SELECT min(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
-    cursor.execute(sql)
-    start = cursor.fetchall()[0][0]
-    sql = '''SELECT max(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
-    cursor.execute(sql)
-    end = cursor.fetchall()[0][0]
-    days = end - start + 1
-
-    # We've reached a new day if this statement is true! (Treating it as a morning login)
-    if days != today:
-        today = days
-        if today == 15:
-            sql = ''' Update Users Set model_id = %d where p_id = %d ''' % (curr_id, curr_id)
+            print(curr_id)
+            sql = '''SELECT min(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
             cursor.execute(sql)
-            db.commit()
-            create_model()
-        if today > 15:
-            update_model()
+            start = cursor.fetchall()[0][0]
+            sql = '''SELECT max(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
+            cursor.execute(sql)
+            end = cursor.fetchall()[0][0]
+            days = end - start + 1
+
+            # We've reached a new day if this statement is true! (Treating it as a morning login)
+            if days != today:
+                today = days
+                if today == 15:
+                    sql = '''Update Users Set model_id = %d where p_id = %d ''' % (curr_id, curr_id)
+                    cursor.execute(sql)
+                    db.commit()
+                    create_model()
+                if today > 15:
+                    update_model()
 
     print(curr_email)
+
+    # WHAT HAPPENS WHEN WE HAVE NO LOGS? Put this in a try-except block and make day value = 1?
+    #print(curr_id)
+    
     return jsonify({'valid': 'yes', 'email': 'found'})
 
 @app.route('/loadprofile', methods=['POST', 'OPTIONS'])
@@ -398,6 +409,13 @@ def loadprofile():
     else:
         dct = dct = {'email': curr_email, 'name': ret[1] + " " + ret[2], 'username': ret[3], 'age': ret[5], 'height': ret[6], 'weight': ret[7], 'calories_b': 0, 'calories_i': 0}
     return jsonify(dct)
+
+@app.route('/test', methods=['POST', 'OPTIONS'])
+def test():
+    request_data = request.get_json()
+    print(request.headers)
+    print(request_data)
+    return jsonify({'valid':'false'}) 
 
 @app.route('/loadactivity', methods=['POST', 'OPTIONS'])
 def loadactivity():
