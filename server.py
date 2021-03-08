@@ -207,7 +207,7 @@ def create_model():
     l_c = int(l_c/i)
     d_c = int(d_c/i)
 
-    sql = '''insert into Models (model_id, breakfast_avg, b_cal, lunch_avg, l_cal, dinner_avg, d_cal) values(%d, '%s', %d, '%s', %d, '%s', %d)''' % (curr_id, breakfast_avg, b_c, lunch_avg, l_c, dinner_avg, d_c)
+    sql = '''insert ignore into Models (model_id, breakfast_avg, b_cal, lunch_avg, l_cal, dinner_avg, d_cal) values(%d, '%s', %d, '%s', %d, '%s', %d)''' % (curr_id, breakfast_avg, b_c, lunch_avg, l_c, dinner_avg, d_c)
     cursor.execute(sql)
     db.commit()
     print('Added to DB')
