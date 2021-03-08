@@ -6,6 +6,7 @@ import pymysql
 import numpy as np
 from sklearn.preprocessing import RobustScaler
 import pandas as pd
+import time
 from datetime import datetime
 
 # create the Flask app
@@ -269,22 +270,23 @@ def update_model():
     print('Added to DB')
 
 # Called when user clicks their recommendation page
-@app.route('/getrecommendation', methods=['POST', 'OPTIONS'])
+@app.route('/getrecommendation', methods=['GET'])
 def get_rec():
     global curr_id, db
-
+    
     b_foods = dict()
     l_foods = dict()
     d_foods = dict()
 
     request_data = request.get_json()
     sql = '''SELECT model_id FROM Users WHERE p_id = %d ''' % (curr_id)
-    cursor.execute(sql)
+    print(cursor.execute(sql))
     model_id = cursor.fetchall()[0]
     sql = '''SELECT breakfast_avg, b_cal, lunch_avg, l_cal, dinner_avg, d_cal FROM Models WHERE model_id = %d ''' % (model_id)
     cursor.execute(sql)
     times = cursor.fetchall()[0]
-
+    print(times)
+    
     sql = '''SELECT l_id FROM Logs WHERE p_id = %d ''' % (curr_id)
     cursor.execute(sql)
     log_ids = cursor.fetchall()[0]
@@ -292,22 +294,31 @@ def get_rec():
         sql = '''SELECT food_name, food_c_intake FROM Foods WHERE l_id = %d ''' % (log_id)
         cursor.execute(sql)
         food_data = cursor.fetchall()
-        if food_data[0][0] not in b_foods and abs(food_data[0][1] - times[1]) < 200:
-            b_foods[food_data[0][0]] = [1, food_data[0][1]]
-        else:
-            b_foods[food_data[0][0]] = [b_foods[food_data[0][0]][0] + 1, ((b_foods[food_data[0][0]][1] * b_foods[food_data[0][0]][0]) + food_data[0][1])/(b_foods[food_data[0][0]][0] + 1)]
-        if food_data[1][0] not in l_foods and abs(food_data[1][1] - times[3]) < 200:
-            l_foods[food_data[1][0]] = [1, food_data[1][1]]
-        else:
-            l_foods[food_data[1][0]] = [l_foods[food_data[1][0]][0] + 1, ((l_foods[food_data[1][0]][1] * l_foods[food_data[1][0]][0]) + food_data[1][1])/(l_foods[food_data[1][0]][0] + 1)]
-        if food_data[2][0] not in d_foods and abs(food_data[2][1] - times[5]) < 200:
-            d_foods[food_data[2][0]] = [1, food_data[2][1]]
-        else:
-            d_foods[food_data[2][0]] = [d_foods[food_data[2][0]][0] + 1, ((d_foods[food_data[2][0]][1] * d_foods[food_data[2][0]][0]) + food_data[2][1])/(d_foods[food_data[2][0]][0] + 1)]
-
-    b_rec = sorted(b_foods.items(), key=lambda item: -item[1][0])[0][0]
-    l_rec = sorted(l_foods.items(), key=lambda item: -item[1][0])[0][0]
-    d_rec = sorted(d_foods.items(), key=lambda item: -item[1][0])[0][0]
+        print(food_data)
+        if abs(food_data[0][1] - times[1]) < 200:
+            if food_data[0][0] not in b_foods:
+                b_foods[food_data[0][0]] = [1, food_data[0][1]]
+            else:
+                b_foods[food_data[0][0]] = [b_foods[food_data[0][0]][0] + 1, ((b_foods[food_data[0][0]][1] * b_foods[food_data[0][0]][0]) + food_data[0][1])/(b_foods[food_data[0][0]][0] + 1)]
+        if abs(food_data[1][1] - times[3]) < 200:
+            if food_data[1][0] not in l_foods:
+                l_foods[food_data[1][0]] = [1, food_data[1][1]]
+            else:
+                l_foods[food_data[1][0]] = [l_foods[food_data[1][0]][0] + 1, ((l_foods[food_data[1][0]][1] * l_foods[food_data[1][0]][0]) + food_data[1][1])/(l_foods[food_data[1][0]][0] + 1)]
+        if abs(food_data[2][1] - times[5]) < 200:
+            if food_data[2][0] not in d_foods:
+                d_foods[food_data[2][0]] = [1, food_data[2][1]]
+            else:
+                d_foods[food_data[2][0]] = [d_foods[food_data[2][0]][0] + 1, ((d_foods[food_data[2][0]][1] * d_foods[food_data[2][0]][0]) + food_data[2][1])/(d_foods[food_data[2][0]][0] + 1)]
+    b_rec = ""
+    l_rec = ""
+    d_rec = ""
+    if len(b_foods) > 0:
+        b_rec = sorted(b_foods.items(), key=lambda item: -item[1][0])[0][0]
+    if len(l_foods) > 0:
+        l_rec = sorted(l_foods.items(), key=lambda item: -item[1][0])[0][0]
+    if len(d_foods) > 0:
+        d_rec = sorted(d_foods.items(), key=lambda item: -item[1][0])[0][0]
 
     return jsonify({
         'b_time': times[0],
@@ -341,13 +352,27 @@ def login():
             else:
                 print("Not found")
             print(curr_id)
+            # WHAT HAPPENS WHEN WE HAVE NO LOGS? Put this in a try-except block and make day value = 1?
             sql = '''SELECT min(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
-            cursor.execute(sql)
-            start = cursor.fetchall()[0][0]
+            print("Min_id")
+            print(cursor.execute(sql))
+            start = cursor.fetchall()[0]
+            print(start)
+            if len(start) > 0:
+                start = start[0]
+            else:
+                start = 0
             sql = '''SELECT max(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
-            cursor.execute(sql)
-            end = cursor.fetchall()[0][0]
+            print("Max_id")
+            print(cursor.execute(sql))
+            end = cursor.fetchall()[0]
+            print(end)
+            if len(end) > 0:
+                end = end[0]
+            else:
+                end = 0
             days = end - start + 1
+
 
             # We've reached a new day if this statement is true! (Treating it as a morning login)
             if days != today:
@@ -357,13 +382,12 @@ def login():
                     cursor.execute(sql)
                     db.commit()
                     create_model()
+                    print("Model Created")
                 if today > 15:
                     update_model()
+                    print("Model updates")
 
     print(curr_email)
-
-    # WHAT HAPPENS WHEN WE HAVE NO LOGS? Put this in a try-except block and make day value = 1?
-    #print(curr_id)
     
     return jsonify({'valid': 'yes', 'email': 'found'})
 
