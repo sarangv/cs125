@@ -21,6 +21,9 @@ export class Tab2Page {
   last_activity:any;
   last_food:any;
   activity_details:any;
+  food_details:any;
+  num_activities:any;
+  num_foods:any;
 
   constructor(private healthKit: HealthKit, private plt: Platform, public userService:UserService, private formBuilder: FormBuilder, 
     private navCtrl : NavController, private modalController: ModalController) {
@@ -86,22 +89,37 @@ export class Tab2Page {
       if (response['valid'] == 'true') {
         console.log("Activity data present");
         this.activity_name = response['activity_name'] 
-        this.calories_b = response['calories_b'].slice(-1)[0] ;
-        this.intensity = response['intensity'].slice(-1)[0] ;
-        this.last_activity = response['activity_name'].slice(-1)[0];
         this.activity_details = [];
-        for (var i = 0; i < this.activity_name.length; i++) {
-          var activity : string = this.activity_name[i];
-          var calories = response['calories_b'][i];
-          console.log("ACTIVITY = ", activity);
-          var d = {};
-          d[activity] = calories;
-          this.activity_details.push(d);
-          console.log(this.activity_details);
+        if (typeof(this.activity_name) == 'string') {
+          this.num_activities = 1;
+          var info = String(this.activity_name);
+          info += ';' + String(calories);
+          this.activity_details.push(info);
+          this.last_activity = response['activity_name'];
+          this.calories_b = response['calories_b'];
+          this.intensity = response['intensity'];
+          //console.log("HELLO THERE THIS IS A STRING");
+        }
+        else {
+          console.log("ENTERED ELSE");
+          this.last_activity = response['activity_name'].slice(-1)[0];
+          this.calories_b = response['calories_b'].slice(-1)[0];
+          this.intensity = response['intensity'].slice(-1)[0];
+          for (var i = 0; i < this.activity_name.length; i++) {
+            var activity : string = this.activity_name[i];
+            var calories = response['calories_b'][i];
+            var info = String(activity);
+            info += ';' + String(calories);
+            this.activity_details.push(info);
+            console.log(this.activity_details);
+          }
+          this.num_activities = this.activity_name.length;
         }
       }
       else {
         this.activity_name = [];
+        this.num_activities = this.activity_name.length;
+        
       }
     });
   }
@@ -113,10 +131,35 @@ export class Tab2Page {
       console.log(response);
       if (response['valid'] == 'true') {
         console.log("Food data present");
+        this.food_details = [];
         this.food_name = response['food_name'];
-        this.calories_i = response['calories_i'].slice(-1)[0];
-        this.last_food = response['food_name'].slice(-1)[0];};
-    
+        if (typeof(this.food_name) == 'string') {
+          this.last_food = response['food_name'];
+          this.calories_i = response['calories_i'];
+          this.num_foods = 1;
+          var info = String(this.food_name);
+          info += ';' + String(calories);
+          this.food_details.push(info);
+          console.log(this.food_details);
+        }
+        else {
+          this.calories_i = response['calories_i'].slice(-1)[0];
+          this.last_food = response['food_name'].slice(-1)[0];
+          this.num_foods = this.food_name.length;
+          for (var i = 0; i < this.food_name.length; i++) {
+            var food : string = this.food_name[i];
+            var calories = response['calories_i'][i];
+            var info = String(food);
+            info += ';' + String(calories);
+            this.food_details.push(info);
+            console.log(this.food_details);
+          }
+        }
+      }
+      else {
+        this.food_name = [];
+        this.num_foods = 0;
+      }
     });
   }
 

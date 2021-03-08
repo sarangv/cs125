@@ -9,7 +9,7 @@ import { ModalController, NavController, Platform } from '@ionic/angular';
   templateUrl: './foodlog.page.html',
   styleUrls: ['./foodlog.page.scss'],
 })
-  export class FoodlogPage implements OnInit {
+  export class FoodlogPage{
     get name() {
       return this.foodForm.get("name");
     }
@@ -91,11 +91,8 @@ import { ModalController, NavController, Platform } from '@ionic/angular';
           //this.navCtrl.navigateBack('/tabs/tab2');
           this.dismissModal();
         })
-      this.modalController.dismiss();
+      this.dismissModal();
       //this.navCtrl.navigateForward('/tabs');
-    }
-
-    ngOnInit() {
     }
   
   }
