@@ -172,42 +172,62 @@ def create_model():
     request_data = request.get_json()
     sql = '''SELECT l_id FROM Logs WHERE p_id = %d ''' % (curr_id)
     cursor.execute(sql)
-    log_ids = cursor.fetchall()[0]
-    breakfast_avg = 0
+    #log_ids = cursor.fetchall()[0]
+    log_ids = cursor.fetchall()
+    b_times = [0,0,0,0,0,0,0]
     b_c = 0
-    lunch_avg = 0
+    l_times = [0,0,0,0,0,0,0]
     l_c = 0
-    dinner_avg = 0
+    d_times = [0,0,0,0,0,0,0]
     d_c = 0
+
+    day_count = [0,0,0,0,0,0,0]
     i = 0
+
+    print("Log_ids", log_ids) 
     for log_id in log_ids:
         sql = '''SELECT food_time, food_c_intake FROM Foods WHERE l_id = %d ''' % (log_id)
         cursor.execute(sql)
         times = cursor.fetchall()
+        #print(times)
         breakfast = datetime.strptime(times[0][0], '%m-%d-%y %I:%M %p')
-        breakfast_avg += breakfast.hour * 60 + breakfast.minute
+
+        day_of_week = breakfast.weekday()
+
+        b_times[day_of_week] += breakfast.hour * 60 + breakfast.minute
         lunch = datetime.strptime(times[1][0], '%m-%d-%y %I:%M %p')
-        lunch_avg += lunch.hour * 60 + lunch.minute
+        l_times[day_of_week] += lunch.hour * 60 + lunch.minute
         dinner = datetime.strptime(times[2][0], '%m-%d-%y %I:%M %p')
-        dinner_avg += dinner.hour * 60 + dinner.minute
+        d_times[day_of_week] += dinner.hour * 60 + dinner.minute
+
+        print("Day", i)
+        print(b_times)
+        print(l_times)
+        print(d_times)
 
         b_c += times[0][1]
         l_c += times[1][1]
         d_c += times[2][1]
+        day_count[day_of_week] += 1
         i += 1
 
-    breakfast_avg = int(breakfast_avg/i)
-    breakfast_avg = datetime(2021, 1, 1, int(breakfast_avg / 60), breakfast_avg % 60, 0).strftime('%I:%M %p')
-    lunch_avg = int(lunch_avg/i)
-    lunch_avg = datetime(2021, 1, 1, int(lunch_avg / 60), lunch_avg % 60, 0).strftime('%I:%M %p')
-    dinner_avg = int(dinner_avg/i)
-    dinner_avg = datetime(2021, 1, 1, int(dinner_avg / 60), dinner_avg % 60, 0).strftime('%I:%M %p')
+    for j in range(7):
+        b_times[j] = int(b_times[j]/day_count[j])
+        b_times[j] = datetime(2021, 1, 1, int(b_times[j] / 60), b_times[j] % 60, 0).strftime('%I:%M %p')
+        l_times[j] = int(l_times[j]/day_count[j])
+        l_times[j] = datetime(2021, 1, 1, int(l_times[j] / 60), l_times[j] % 60, 0).strftime('%I:%M %p')
+        d_times[j] = int(d_times[j]/day_count[j])
+        d_times[j] = datetime(2021, 1, 1, int(d_times[j] / 60), d_times[j] % 60, 0).strftime('%I:%M %p')
+
+    print(b_times)
+    print(l_times)
+    print(d_times)
 
     b_c = int(b_c/i)
     l_c = int(l_c/i)
     d_c = int(d_c/i)
 
-    sql = '''insert ignore into Models (model_id, breakfast_avg, b_cal, lunch_avg, l_cal, dinner_avg, d_cal) values(%d, '%s', %d, '%s', %d, '%s', %d)''' % (curr_id, breakfast_avg, b_c, lunch_avg, l_c, dinner_avg, d_c)
+    sql = '''insert ignore into Models (model_id, b_time0, b_time1, b_time2, b_time3, b_time4, b_time5, b_time6, b_cal, l_time0, l_time1, l_time2, l_time3, l_time4, l_time5, l_time6, l_cal, d_time0, d_time1, d_time2, d_time3, d_time4, d_time5, d_time6, d_cal) values(%d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d, '%s', '%s', '%s', '%s', '%s', '%s', '%s', %d)''' % (curr_id, b_times[0], b_times[1], b_times[2], b_times[3], b_times[4], b_times[5], b_times[6], b_c, l_times[0], l_times[1], l_times[2], l_times[3], l_times[4], l_times[5], l_times[6], l_c, d_times[0], d_times[1], d_times[2], d_times[3], d_times[4], d_times[5], d_times[6], d_c)
     cursor.execute(sql)
     db.commit()
     print('Added to DB')
@@ -223,13 +243,22 @@ def update_model():
     sql = '''SELECT max(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
     cursor.execute(sql)
     end = cursor.fetchall()[0][0]
+
+    sql = '''SELECT food_time FROM Foods WHERE l_id = %d ''' % (start)
+    cursor.execute(sql)
+    first_day = cursor.fetchall()[0][0]
+    first_day = datetime.strptime(first_day, '%m-%d-%y %I:%M %p').weekday()
     
-    days = end - start
     sql = '''SELECT food_time, food_c_intake FROM Foods WHERE l_id = %d ''' % (end)
     cursor.execute(sql)
     today_times = cursor.fetchall()
     
     today_breakfast = datetime.strptime(today_times[0][0], '%m-%d-%y %I:%M %p')
+
+    day_of_week = today_breakfast.weekday()
+    days = end - start
+    days = int(days / 7) + (first_day < day_of_week)
+
     today_breakfast = today_breakfast.hour * 60 + today_breakfast.minute
     today_lunch = datetime.strptime(today_times[1][0], '%m-%d-%y %I:%M %p')
     today_lunch = today_lunch.hour * 60 + today_lunch.minute
@@ -239,7 +268,7 @@ def update_model():
     t_l_c = today_times[1][1]
     t_d_c = today_times[2][1]
 
-    sql = '''SELECT breakfast_avg, lunch_avg, dinner_avg, b_cal, l_cal, d_cal FROM Models WHERE model_id = %d ''' % (curr_id)
+    sql = '''SELECT b_time%d, l_time%d, d_time%d, b_cal, l_cal, d_cal FROM Models WHERE model_id = %d ''' % (day_of_week, day_of_week, day_of_week, curr_id)
     cursor.execute(sql)
     times = cursor.fetchall()[0]
 
@@ -264,7 +293,7 @@ def update_model():
     lunch_avg = datetime(2021, 1, 1, int(lunch_avg / 60), lunch_avg % 60, 0).strftime('%I:%M %p')
     dinner_avg = datetime(2021, 1, 1, int(dinner_avg / 60), dinner_avg % 60, 0).strftime('%I:%M %p')
 
-    sql = ''' Update Models Set breakfast_avg = '%s', b_cal = %d, lunch_avg = '%s', l_cal = %d, dinner_avg = '%s', d_cal = %d where model_id = %d ''' % (breakfast_avg, b_c, lunch_avg, l_c, dinner_avg, d_c, curr_id)
+    sql = ''' Update Models Set b_time%d = '%s', b_cal = %d, l_time%d = '%s', l_cal = %d, d_time%d = '%s', d_cal = %d where model_id = %d ''' % (day_of_week, breakfast_avg, b_c, day_of_week, lunch_avg, l_c, day_of_week, dinner_avg, d_c, curr_id)
     cursor.execute(sql)
     db.commit()
     print('Added to DB')
@@ -273,20 +302,29 @@ def update_model():
 @app.route('/getrecommendation', methods=['GET'])
 def get_rec():
     global curr_id, db
-    
+
     b_foods = dict()
     l_foods = dict()
     d_foods = dict()
 
     request_data = request.get_json()
     sql = '''SELECT model_id FROM Users WHERE p_id = %d ''' % (curr_id)
-    print(cursor.execute(sql))
+    cursor.execute(sql)
     model_id = cursor.fetchall()[0]
-    sql = '''SELECT breakfast_avg, b_cal, lunch_avg, l_cal, dinner_avg, d_cal FROM Models WHERE model_id = %d ''' % (model_id)
+
+    sql = '''SELECT max(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
+    cursor.execute(sql)
+    end = cursor.fetchall()[0][0]
+    sql = '''SELECT food_time FROM Foods WHERE l_id = %d ''' % (end)
+    cursor.execute(sql)
+    today = cursor.fetchall()[0][0]
+    today = datetime.strptime(today, '%m-%d-%y %I:%M %p').weekday() 
+    day_of_week = (today+1) % 7
+
+    sql = '''SELECT b_time%d, b_cal, l_time%d, l_cal, d_time%d, d_cal FROM Models WHERE model_id = %d ''' % (day_of_week, day_of_week, day_of_week, model_id)
     cursor.execute(sql)
     times = cursor.fetchall()[0]
-    print(times)
-    
+
     sql = '''SELECT l_id FROM Logs WHERE p_id = %d ''' % (curr_id)
     cursor.execute(sql)
     log_ids = cursor.fetchall()[0]
@@ -352,7 +390,6 @@ def login():
             else:
                 print("Not found")
             print(curr_id)
-            # WHAT HAPPENS WHEN WE HAVE NO LOGS? Put this in a try-except block and make day value = 1?
             sql = '''SELECT min(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
             print("Min_id")
             print(cursor.execute(sql))
