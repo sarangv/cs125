@@ -14,6 +14,7 @@ app = Flask(__name__)
 CORS(app)
 curr_email = ""
 curr_id = None
+curr_date = date.today().strftime("%y-%m-%d")
 db = None
 today = 1
 activity_logs = defaultdict(list)
@@ -184,12 +185,10 @@ def create_model():
     day_count = [0,0,0,0,0,0,0]
     i = 0
 
-    print("Log_ids", log_ids) 
     for log_id in log_ids:
         sql = '''SELECT food_time, food_c_intake FROM Foods WHERE l_id = %d ''' % (log_id)
         cursor.execute(sql)
         times = cursor.fetchall()
-        #print(times)
         breakfast = datetime.strptime(times[0][0], '%m-%d-%y %I:%M %p')
 
         day_of_week = breakfast.weekday()
@@ -199,11 +198,6 @@ def create_model():
         l_times[day_of_week] += lunch.hour * 60 + lunch.minute
         dinner = datetime.strptime(times[2][0], '%m-%d-%y %I:%M %p')
         d_times[day_of_week] += dinner.hour * 60 + dinner.minute
-
-        print("Day", i)
-        print(b_times)
-        print(l_times)
-        print(d_times)
 
         b_c += times[0][1]
         l_c += times[1][1]
@@ -218,10 +212,6 @@ def create_model():
         l_times[j] = datetime(2021, 1, 1, int(l_times[j] / 60), l_times[j] % 60, 0).strftime('%I:%M %p')
         d_times[j] = int(d_times[j]/day_count[j])
         d_times[j] = datetime(2021, 1, 1, int(d_times[j] / 60), d_times[j] % 60, 0).strftime('%I:%M %p')
-
-    print(b_times)
-    print(l_times)
-    print(d_times)
 
     b_c = int(b_c/i)
     l_c = int(l_c/i)
@@ -310,11 +300,14 @@ def get_rec():
     request_data = request.get_json()
     sql = '''SELECT model_id FROM Users WHERE p_id = %d ''' % (curr_id)
     cursor.execute(sql)
-    model_id = cursor.fetchall()[0]
+    model_id = cursor.fetchall()[0][0]
 
-    sql = '''SELECT max(l_id) FROM Logs WHERE p_id = %d ''' % (curr_id)
+    sql = '''SELECT max(l_id), c_burned FROM Logs WHERE p_id = %d ''' % (curr_id)
     cursor.execute(sql)
-    end = cursor.fetchall()[0][0]
+    recent_pair = cursor.fetchall()[0]
+    end = recent_pair[0]
+    c_burned = recent_pair[1]
+
     sql = '''SELECT food_time FROM Foods WHERE l_id = %d ''' % (end)
     cursor.execute(sql)
     today = cursor.fetchall()[0][0]
@@ -324,6 +317,9 @@ def get_rec():
     sql = '''SELECT b_time%d, b_cal, l_time%d, l_cal, d_time%d, d_cal FROM Models WHERE model_id = %d ''' % (day_of_week, day_of_week, day_of_week, model_id)
     cursor.execute(sql)
     times = cursor.fetchall()[0]
+    times[1] += int(c_burned/3)
+    times[3] += int(c_burned/3)
+    times[5] += int(c_burned/3)
 
     sql = '''SELECT l_id FROM Logs WHERE p_id = %d ''' % (curr_id)
     cursor.execute(sql)
@@ -431,7 +427,7 @@ def login():
 @app.route('/loadprofile', methods=['POST', 'OPTIONS'])
 def loadprofile():
     print("loadprofile")
-    global curr_email, curr_id, db
+    global curr_email, curr_id, db, curr_date
     dct = {}
     print(curr_email)
     request_data = request.get_json()
@@ -440,7 +436,7 @@ def loadprofile():
     ret = cursor.fetchall()[0]
     print(ret)
     curr_id = ret[0]
-    curr_date = date.today().strftime("%y-%m-%d")
+    #curr_date = date.today().strftime("%y-%m-%d")
     sql = '''SELECT * FROM Logs l WHERE l.p_id = %d and l.l_date = '%s' ''' % (curr_id, curr_date)
     cursor.execute(sql)
     prof = cursor.fetchall()
@@ -539,11 +535,11 @@ def food():
 
 @app.route('/logs', methods=['POST'])
 def logs():
-    global curr_id, activity_logs, food_logs, db
+    global curr_id, activity_logs, food_logs, db, curr_date
     if (curr_id is not None):
         print("entered logs")
         request_data = request.get_json()
-        curr_date = date.today().strftime("%m-%d-%y")
+        #curr_date = date.today().strftime("%m-%d-%y")
         sql = '''SELECT * FROM Logs u WHERE u.p_id = '%s' and u.l_date = '%s' ''' % (curr_id, curr_date) 
         cursor.execute(sql)
         ret = cursor.fetchall()
