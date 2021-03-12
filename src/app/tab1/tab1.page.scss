@@ -1,0 +1,35 @@
+.settings-icon {
+    background-color: #050607;
+}
+
+.settings-button {
+    background-color: #050607;
+}
+
+.description {
+    color: red;
+}
+
+.card-body {
+    //background-color: #ffffff;
+    //padding: 30px;
+    //height: calc(100vh – (200px + 56px));
+    overflow: hidden;
+
+    .user-meta {
+        padding-top: 40px;
+
+        .playername {
+            font-size: 24px;
+            font-weight: 600;
+            color: #050607;
+        }
+
+        .country {
+            font-size: 90%;
+            color: #9ea2a5;
+            text-transform: uppercase;
+            margin: 0 auto;
+        }
+    }
+}

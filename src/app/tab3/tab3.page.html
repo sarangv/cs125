@@ -1,0 +1,58 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title class="title">
+      Recommendations
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      Breakfast Recommendation:
+      <ion-card-title>
+        <ion-label class="rec-meal" item-end>Breakfast Time:<br>{{ bf_time }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text class="rec-food">Recommended Food Item:<br>{{ bf_food }}</ion-text></p>
+      <img [src]="bf_img" alt="Hello" width="100" height="100">
+     
+      <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
+        Add Food Item
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button>-->
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Lunch Recommendation:
+      <ion-card-title>
+        <ion-label class="rec-meal" item-end>Lunch Time:<br>{{ l_time }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text class="rec-food">Recommended Food Item:<br>{{ l_food }}</ion-text></p>
+      <img [src]="l_img" alt="Hello" width="100" height="100">
+      <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
+        Add Food Item
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button>-->
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Dinner Recommendation:
+      <ion-card-title>
+        <ion-label class="rec-meal" item-end>Dinner Time:<br>{{ d_time }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text class="rec-food">Recommended Food Item:<br>{{ d_food }}</ion-text></p>
+      <img [src]="d_img" alt="Hello" width="100" height="100">
+      <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
+        Add Food Item
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button>-->
+    </ion-card-content>
+  </ion-card>
+</ion-content>

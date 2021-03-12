@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <button class="settings-button" ion-button item-end icon-right (click)="logout()">
+      <ion-icon class="settings-icon" size="large" name="cog-outline"></ion-icon>
+    </button>
+    <ion-title>
+      Profile
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Calories Burned:</ion-card-subtitle>
+      <ion-card-title>
+        <ion-label item-end>{{ calories_b }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h6 class="description" *ngIf="activity_name">Wow an intensity of {{ activity_intensity }} for {{ activity_name }}?? Keep up the good work</h6>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Calories Consumed:</ion-card-subtitle>
+      <ion-card-title>
+        <ion-label item-end>{{ calories_i }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h6 class="description" *ngIf="food_name">Hope you liked your {{ food_name }}!</h6>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Steps Taken:</ion-card-subtitle>
+      <ion-card-title>
+        <ion-input type="text" [(ngModel)]="stepCount" readonly></ion-input>
+      </ion-card-title>
+    </ion-card-header>
+  </ion-card>
+  <!--<div class="card-body">
+    <div class="user-meta ion-text-center">
+      <h3 class="playername">{{ name }}</h3>
+      <h5 class="country">{{ username }}</h5>
+      <h5 class="country">{{ email }}</h5>
+      <h6 class="calories_b">Calories Burned: <ion-chip>
+        <ion-label>{{ calories_b }}</ion-label>
+        </ion-chip>
+      </h6>
+      <h6 class="calories_i">Calories Eaten: <ion-chip>
+        <ion-label>{{ calories_i }}</ion-label>
+        </ion-chip>
+      </h6>
+      <h6 class="steps">Steps Taken: <ion-chip>
+        <ion-input type="text" [(ngModel)]="stepCount" readonly></ion-input>
+        </ion-chip>
+      </h6>
+    </div>
+  </div>
+  <div class="card-body2">
+    <div class="user-meta ion-text-center">
+      <h6 *ngIf="activity_name">Wow an intensity of {{ activity_intensity }} for {{ activity_name }}?? Keep up the good work</h6>
+      <h6 *ngIf="food_name">Hope you liked your {{ food_name }}!</h6>
+    </div>
+  </div>-->
+  <!--
+  <p>User: {{ username }}</p>
+  <p>Name: {{ name }}</p>
+  <p>Email: {{ email }}</p>
+  <p>Age: {{ age }}</p>
+  <p>Height: {{ height }}</p>
+  <p>Weight: {{ weight }}</p>
+  <p>Calories burned: {{ calories_b }}</p>
+  <p>Calories eaten: {{ calories_i }}</p>
+  -->
+  
+</ion-content>

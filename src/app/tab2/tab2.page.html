@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Log Data
+    </ion-title>
+  </ion-toolbar>
+</ion-header>  
+<ion-content>
+  <div style="clear: both">
+    <h6 class="status1">Activities Logged:<span class="status2" style="float:right">Food Logged:</span></h6>
+    <div>
+      <ion-button class="bubble1" expand="block">{{ num_activities }}</ion-button>
+      <ion-button class="bubble2" expand="block">{{ num_foods }}</ion-button>
+    </div>
+  </div>  
+  <hr />
+  <ion-card class="card">
+    <ion-card-header>
+      Last Activity:
+        <ion-card-title item-end>{{ last_activity }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text class="log-data">Calories burned: {{ calories_b }}</ion-text></p>
+      <p><ion-text class="log-data2">Intensity: {{ intensity }}</ion-text></p>
+      <ion-button (click)="sendtoActivity()" type="button" size="small" expand = "block">Add Activity
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button> 
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      Last Meal:
+      <ion-card-title>
+        <ion-label item-end>{{ last_food }}</ion-label>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><ion-text class="log-data2">Calories Consumed: {{ calories_i }}</ion-text></p>
+      <ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
+        Add Food Item
+        <ion-icon slot="start" name="add-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+  <ion-grid>
+    <ng-container *ngIf="activity_details">
+      <h3 class="title">Activities Added:</h3>
+      <ng-container *ngFor= "let val of activity_details | keyvalue">
+        <ion-row>
+          <ion-col>
+            <h4 style="text-align:center">{{ val.value.slice(0, val.value.indexOf(';')) }}</h4>
+          </ion-col>
+          <ion-col>
+            <h4 style="text-align:center">{{ val.value.slice(val.value.indexOf(';') + 1) + ' calories' }}</h4>
+          </ion-col>
+        </ion-row>
+      </ng-container>
+    </ng-container>
+  </ion-grid>
+  <ion-grid>
+    <ng-container *ngIf="food_details">
+      <h3 class="title">Food Added:</h3>
+      <ng-container *ngFor= "let val of food_details | keyvalue">
+        <ion-row>
+          <ion-col>
+            <h4 style="text-align:center">{{ val.value.slice(0, val.value.indexOf(';')) }}</h4>
+          </ion-col>
+          <ion-col>
+            <h4 style="text-align:center">{{ val.value.slice(val.value.indexOf(';') + 1) + ' calories' }}</h4>
+          </ion-col>
+        </ion-row>
+      </ng-container>
+    </ng-container>
+  </ion-grid>
+</ion-content>
+<ion-footer class="ion-no-padding ion-no-margin">
+  <ion-button (click)="saveLog()" type="submit" expand="block">Confirm<ion-icon slot="end"name="create"></ion-icon></ion-button>
+</ion-footer>
