@@ -316,7 +316,7 @@ def get_rec():
 
     sql = '''SELECT b_time%d, b_cal, l_time%d, l_cal, d_time%d, d_cal FROM Models WHERE model_id = %d ''' % (day_of_week, day_of_week, day_of_week, model_id)
     cursor.execute(sql)
-    times = cursor.fetchall()[0]
+    times = list(cursor.fetchall()[0])
     times[1] += int(c_burned/3)
     times[3] += int(c_burned/3)
     times[5] += int(c_burned/3)
@@ -329,17 +329,17 @@ def get_rec():
         cursor.execute(sql)
         food_data = cursor.fetchall()
         print(food_data)
-        if abs(food_data[0][1] - times[1]) < 200:
+        if abs(food_data[0][1] - times[1]) < 500:
             if food_data[0][0] not in b_foods:
                 b_foods[food_data[0][0]] = [1, food_data[0][1]]
             else:
                 b_foods[food_data[0][0]] = [b_foods[food_data[0][0]][0] + 1, ((b_foods[food_data[0][0]][1] * b_foods[food_data[0][0]][0]) + food_data[0][1])/(b_foods[food_data[0][0]][0] + 1)]
-        if abs(food_data[1][1] - times[3]) < 200:
+        if abs(food_data[1][1] - times[3]) < 500:
             if food_data[1][0] not in l_foods:
                 l_foods[food_data[1][0]] = [1, food_data[1][1]]
             else:
                 l_foods[food_data[1][0]] = [l_foods[food_data[1][0]][0] + 1, ((l_foods[food_data[1][0]][1] * l_foods[food_data[1][0]][0]) + food_data[1][1])/(l_foods[food_data[1][0]][0] + 1)]
-        if abs(food_data[2][1] - times[5]) < 200:
+        if abs(food_data[2][1] - times[5]) < 500:
             if food_data[2][0] not in d_foods:
                 d_foods[food_data[2][0]] = [1, food_data[2][1]]
             else:

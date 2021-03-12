@@ -5,6 +5,8 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
   providedIn: 'root'
 })
 export class UserService {
+  google_key: string = "AIzaSyC-tTf4XeuiusOW97dNZdJYIjNwPEajKlc";
+  google_search_engine_id: string = "5581c5566394ebf2e";
 
   constructor(public http:HttpClient) { }
 
@@ -70,7 +72,7 @@ export class UserService {
     headers.append('Access-Control-Allow-Credentials', 'true');
     var url = "http://127.0.0.1:3000/getrecommendation";
 
-    return this.http.post(url, dataToSend, {headers: headers});
+    return this.http.get(url, dataToSend);
   }
 
   Saveactivity(dataToSend)
@@ -136,5 +138,12 @@ export class UserService {
     var url = "http://127.0.0.1:3000/loadfood";
 
     return this.http.post(url, dataToSend, {headers: headers});
+  }
+
+  LoadImage(dataToSend : object)
+  {
+    var url = "https://customsearch.googleapis.com/customsearch/v1?cx=" + this.google_search_engine_id + "&q=" + dataToSend['foodItem'] + "&searchType=image&key=" + this.google_key;
+    console.log("URL:", url);
+    return this.http.get(url);
   }
 }

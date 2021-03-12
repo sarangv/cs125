@@ -10,11 +10,13 @@
     <ion-card-header>
       Breakfast Recommendation:
       <ion-card-title>
-        <ion-label item-end>Breakfast Time: {{ bf_time }}</ion-label>
+        <ion-label class="rec-meal" item-end>Breakfast Time:<br>{{ bf_time }}</ion-label>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p><ion-text>Recommended Food Item: {{ bf_food }}</ion-text></p>
+      <p><ion-text class="rec-food">Recommended Food Item:<br>{{ bf_food }}</ion-text></p>
+      <img [src]="bf_img" alt="Hello" width="100" height="100">
+     
       <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
         Add Food Item
         <ion-icon slot="start" name="add-circle-outline"></ion-icon>
@@ -25,11 +27,12 @@
     <ion-card-header>
       Lunch Recommendation:
       <ion-card-title>
-        <ion-label item-end>Lunch Time: {{ l_time }}</ion-label>
+        <ion-label class="rec-meal" item-end>Lunch Time:<br>{{ l_time }}</ion-label>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p><ion-text>Recommended Food Item: {{ l_food }}</ion-text></p>
+      <p><ion-text class="rec-food">Recommended Food Item:<br>{{ l_food }}</ion-text></p>
+      <img [src]="l_img" alt="Hello" width="100" height="100">
       <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
         Add Food Item
         <ion-icon slot="start" name="add-circle-outline"></ion-icon>
@@ -40,11 +43,12 @@
     <ion-card-header>
       Dinner Recommendation:
       <ion-card-title>
-        <ion-label item-end>Dinner Time: {{ d_time }}</ion-label>
+        <ion-label class="rec-meal" item-end>Dinner Time:<br>{{ d_time }}</ion-label>
       </ion-card-title>
     </ion-card-header>
     <ion-card-content>
-      <p><ion-text>Recommended Food Item: {{ d_food }}</ion-text></p>
+      <p><ion-text class="rec-food">Recommended Food Item:<br>{{ d_food }}</ion-text></p>
+      <img [src]="d_img" alt="Hello" width="100" height="100">
       <!--<ion-button (click)="sendtoFood()" type="button" size="small" expand= "block">
         Add Food Item
         <ion-icon slot="start" name="add-circle-outline"></ion-icon>
