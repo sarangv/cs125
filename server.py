@@ -21,6 +21,7 @@ activity_logs = defaultdict(list)
 food_logs = defaultdict(list)
 
 def create_scalers(df):
+    ''' Takes a Pandas DataFrame and outputs a list of RobustScalers to scale down the data for each column in the DataFrame '''
   scalers = []
   for col in df.columns:
     scalers.append(RobustScaler().fit(np.expand_dims(df[col], axis=1)))
@@ -28,6 +29,7 @@ def create_scalers(df):
 
 
 def scale_data(df, scalers):
+    ''' Takes a Pandas DataFrame and list of RobustScalers (generated from create_scalers) and outputs a DataFrame with its columns of data scaled down according to the provided list '''
   df_scaled = df.copy()
   i = 0
   for col in df.columns:
@@ -36,6 +38,7 @@ def scale_data(df, scalers):
   return df_scaled
 
 def get_similar_users(user, df_scaled, similars=1):
+    ''' Takes a user row index, scaled Pandas DataFrame, and desired number of top results for similar users to output the user index, whose data is the closest to the provided user row index’s data via Euclidean distance calculations '''
   similarity_dists = []
   data = df_scaled.to_numpy()
   user_data = df_scaled.loc[user]
@@ -52,6 +55,7 @@ def get_similar_users(user, df_scaled, similars=1):
 
 # Upon usergoals completion
 def find_similar_user():
+    ''' Executes the database request for pulling user information to use for comparison in the get_similar_users() function '''
     global curr_id, db
     request_data = request.get_json()
     sql = '''SELECT age, height, weight, snacks, meals, feasts, sleeptime, cal_burned, goal_cal FROM Users u '''
@@ -77,6 +81,7 @@ def find_similar_user():
 
 @app.route('/registration', methods=['POST', 'OPTIONS'])
 def registration():
+    ''' Grabs basic data from user and adds to Users table '''
     global curr_email, db
     request_data = request.get_json()
     print(request_data)
@@ -121,6 +126,7 @@ def registration():
 
 @app.route('/usergoals', methods=['POST', 'OPTIONS'])
 def usergoals():
+    ''' Grabs goals from user, updates Users table, and finds a similar user for the first 14 days '''
     global curr_email, db
     sql = '''SELECT * FROM Users u WHERE u.email = '%s' ''' % (curr_email)
     cursor.execute(sql)
@@ -168,6 +174,7 @@ def usergoals():
 
 
 def create_model():
+    ''' Computes calorie and time averages for the first 14 days of data belonging to a logged-in user, and stores this information in the database’s Model table '''
     global curr_id, db
 
     request_data = request.get_json()
@@ -224,6 +231,7 @@ def create_model():
 
 # Happens when end of day/next morning starts
 def update_model():
+    ''' Updates the Model table for a logged-in user based on their recently entered food log '''
     global curr_id, db
 
     request_data = request.get_json()
@@ -291,6 +299,7 @@ def update_model():
 # Called when user clicks their recommendation page
 @app.route('/getrecommendation', methods=['GET'])
 def get_rec():
+    ''' Pulls the Model and food item history for a logged-in user, and returns a JSON of the recommended meal times and meal items '''
     global curr_id, db
 
     b_foods = dict()
@@ -298,6 +307,17 @@ def get_rec():
     d_foods = dict()
 
     request_data = request.get_json()
+    sql = '''SELECT * FROM Models WHERE model_id = %d ''' % (9)
+    cursor.execute(sql)
+    a = cursor.fetchall()[0]
+    print("Breakfast times:")
+    print(a[1:8])
+    print("Lunch times:")
+    print(a[9:16])
+    print("Dinner times:")
+    print(a[17:-1])
+
+
     sql = '''SELECT model_id FROM Users WHERE p_id = %d ''' % (curr_id)
     cursor.execute(sql)
     model_id = cursor.fetchall()[0][0]
@@ -317,6 +337,8 @@ def get_rec():
     sql = '''SELECT b_time%d, b_cal, l_time%d, l_cal, d_time%d, d_cal FROM Models WHERE model_id = %d ''' % (day_of_week, day_of_week, day_of_week, model_id)
     cursor.execute(sql)
     times = list(cursor.fetchall()[0])
+    print("Recommended times and calories:")
+    print(times)
     times[1] += int(c_burned/3)
     times[3] += int(c_burned/3)
     times[5] += int(c_burned/3)
@@ -329,17 +351,17 @@ def get_rec():
         cursor.execute(sql)
         food_data = cursor.fetchall()
         print(food_data)
-        if abs(food_data[0][1] - times[1]) < 500:
+        if abs(food_data[0][1] - times[1]) < 200:
             if food_data[0][0] not in b_foods:
                 b_foods[food_data[0][0]] = [1, food_data[0][1]]
             else:
                 b_foods[food_data[0][0]] = [b_foods[food_data[0][0]][0] + 1, ((b_foods[food_data[0][0]][1] * b_foods[food_data[0][0]][0]) + food_data[0][1])/(b_foods[food_data[0][0]][0] + 1)]
-        if abs(food_data[1][1] - times[3]) < 500:
+        if abs(food_data[1][1] - times[3]) < 200:
             if food_data[1][0] not in l_foods:
                 l_foods[food_data[1][0]] = [1, food_data[1][1]]
             else:
                 l_foods[food_data[1][0]] = [l_foods[food_data[1][0]][0] + 1, ((l_foods[food_data[1][0]][1] * l_foods[food_data[1][0]][0]) + food_data[1][1])/(l_foods[food_data[1][0]][0] + 1)]
-        if abs(food_data[2][1] - times[5]) < 500:
+        if abs(food_data[2][1] - times[5]) < 200:
             if food_data[2][0] not in d_foods:
                 d_foods[food_data[2][0]] = [1, food_data[2][1]]
             else:
@@ -366,6 +388,7 @@ def get_rec():
 
 @app.route('/login', methods=['POST', 'OPTIONS'])
 def login():
+    ''' Logs the user into app and validates if valid user. After login, their model is either updated or created if 14 days have passed '''
     global curr_email, curr_id, db, today
     print("login")
     request_data = request.get_json()
@@ -426,6 +449,7 @@ def login():
 
 @app.route('/loadprofile', methods=['POST', 'OPTIONS'])
 def loadprofile():
+    ''' Loads users' data for profile page '''
     print("loadprofile")
     global curr_email, curr_id, db, curr_date
     dct = {}
@@ -454,28 +478,13 @@ def loadprofile():
         f = cursor.fetchall()
         print(f)
         dct = {'email': curr_email, 'name': ret[1] + " " + ret[2], 'username': ret[3], 'age': ret[5], 'height': ret[6], 'weight': ret[7], 'calories_b': calories_b, 'calories_i': calories_i}
-        '''
-        if activity_logs != {}:
-            dct['calories_b'] = activity_logs['calories_b']
-            dct['activity_name'] = activity_logs['activity_name']
-            dct['activity_intensity'] = activity_logs['intensity']
-        if food_logs != {}:
-            dct['calories_i'] = food_logs['food_c_intake']
-            dct['food_name'] = food_logs['food_name']
-        '''
     else:
         dct = dct = {'email': curr_email, 'name': ret[1] + " " + ret[2], 'username': ret[3], 'age': ret[5], 'height': ret[6], 'weight': ret[7], 'calories_b': 0, 'calories_i': 0}
     return jsonify(dct)
 
-@app.route('/test', methods=['POST', 'OPTIONS'])
-def test():
-    request_data = request.get_json()
-    print(request.headers)
-    print(request_data)
-    return jsonify({'valid':'false'}) 
-
 @app.route('/loadactivity', methods=['POST', 'OPTIONS'])
 def loadactivity():
+    ''' Returns users' added activities '''
     global activity_logs, db
     print("loadactivity")
     if activity_logs == {}:
@@ -484,6 +493,7 @@ def loadactivity():
 
 @app.route('/loadfood', methods=['POST', 'OPTIONS'])
 def loadfood():
+    ''' Returns users' added foods '''
     global food_logs, db
     print("loadfood")
     if food_logs == {}:
@@ -493,6 +503,7 @@ def loadfood():
 
 @app.route('/activity', methods=['POST'])
 def activity():
+    ''' Stores activities '''
     global db, activity_logs
     # (('l_id',), ('activity_id',), ('activity_name',), ('activity_start_time',), ('activity_end_time',), ('activity_c_burned',), ('activity_intensity',))
     request_data = request.get_json()
@@ -517,6 +528,7 @@ def activity():
 
 @app.route('/food', methods=['POST'])
 def food():
+    ''' Stores foods '''
     global db, food_logs
     # (('l_id',), ('food_id',), ('food_name',), ('food_time',), ('food_c_intake',))
     request_data = request.get_json()
@@ -535,6 +547,7 @@ def food():
 
 @app.route('/logs', methods=['POST'])
 def logs():
+    ''' Adds processed logs, activities, and foods to DB '''
     global curr_id, activity_logs, food_logs, db, curr_date
     if (curr_id is not None):
         print("entered logs")
